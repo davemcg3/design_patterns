@@ -8,4 +8,4 @@ I recommend you go through them in this order:
 4. concrete_creator: When the core factory does implement all the methods needed to produce default widgets, but they _can_ be overridden by factory subclasses
 5. parameterized_creator: The core factory accepts a parameter that tells it which widget to create; factory subclasses not necessary
 
-Of course these are all just thought exercises. How would you implement these variations on the pattern in real-world code?
+Of course these are all just thought exercises, and there are lots of different ways to implement them. How would you implement these variations on the pattern in real-world code?

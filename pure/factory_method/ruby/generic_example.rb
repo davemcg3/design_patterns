@@ -2,7 +2,7 @@ class Product
   attr_accessor :name
 
   def initialize
-    @name = :GenericProdcut
+    @name = :GenericProduct
   end
 end
 

@@ -1,3 +1,15 @@
+class Widget
+  attr_accessor :createdBy
+
+  def initialize (createdBy)
+    @createdBy = createdBy
+  end
+
+  def description
+    "Widget created by #{@createdBy}"
+  end
+end
+
 class BasicFactory
   attr_accessor :someAttribute
 
@@ -8,7 +20,7 @@ class BasicFactory
   end
 
   def factoryMethod
-    p "calling factoryMethod on #{@someAttribute}"
+    Widget.new @someAttribute
   end
 
   def kickstart
@@ -28,11 +40,21 @@ class BFactory < BasicFactory
   end
 end
 
-@factory = BasicFactory.new
-@factory.factoryMethod
+@factories = []
+@factories << BasicFactory.new
+@factories << AFactory.new
+@factories << BFactory.new
 
-@factory = AFactory.new
-@factory.factoryMethod
+@widgets = []
+p "And the whole point of a factory? To create lots of widgets."
+@factories.each do |factory|
+  20.times do
+    @widgets << factory.factoryMethod
+  end
+end
 
-@factory = BFactory.new
-@factory.factoryMethod
+@widgets.each do |widget|
+  p widget.description
+end
+
+p "#{@widgets.length} widgets now exist"

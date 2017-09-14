@@ -1,3 +1,15 @@
+class Widget
+  attr_accessor :createdBy
+
+  def initialize (createdBy)
+    @createdBy = createdBy
+  end
+
+  def description
+    "Widget created by #{@createdBy}"
+  end
+end
+
 class BasicFactory
   attr_accessor :someAttribute
 
@@ -8,7 +20,7 @@ class BasicFactory
   end
 
   def factoryMethod
-    p "calling factoryMethod on #{@someAttribute}"
+    Widget.new @someAttribute
   end
 
   def kickstart
@@ -30,13 +42,19 @@ end
 
 begin
   @factory = BasicFactory.new
-  @factory.factoryMethod
+  @widget = @factory.factoryMethod
+  p @widget.description
 rescue Exception
   p "Exception caught because default factory raises Exception on kickstart"
 end
 
+@widgets = []
 @factory = AFactory.new
-@factory.factoryMethod
+@widgets << @factory.factoryMethod
 
 @factory = BFactory.new
-@factory.factoryMethod
+@widgets << @factory.factoryMethod
+
+@widgets.each do |widget|
+  p widget.description
+end
