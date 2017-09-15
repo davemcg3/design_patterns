@@ -24,6 +24,9 @@ class ViewBox {
     } else {
       //canvas element not supported, maybe show the user an error
     }
+
+    this.flashBoxWhite = false;
+    this.flashBoxCount = 0;
   }
 
   addToCanvas(element) {
@@ -38,6 +41,42 @@ class ViewBox {
     }
   }
 
+  flashBox(flashes = 0) {
+    if (flashes > 0) {
+      window.box.flashBoxCount = flashes;
+    }
+    // console.log('flashBoxCount:' + window.box.flashBoxCount + ', white? ' + window.box.flashBoxWhite);
+    var context = window.box.canvasContext;
+
+    if (window.box.flashBoxWhite == false && window.box.flashBoxCount > 0) {
+      //flash white
+      // console.log('flash white');
+      context.fillStyle = 'rgba(255,255,255,0.8)';
+      context.fillRect(0, 0, window.box.width, window.box.height);
+      window.box.flashBoxWhite = true;
+      if (--window.box.flashBoxCount > 0) {
+        setTimeout(window.box.flashBox, 80);
+      }
+    } else if (window.box.flashBoxWhite == true && window.box.flashBoxCount > 0) {
+      //invisible
+      // console.log('flash invisible');
+      context.fillStyle = 'rgba(255,255,255,0)';
+      context.fillRect(0, 0, window.box.width, window.box.height);
+      window.box.flashBoxWhite = false;
+      if (window.box.flashBoxCount > 0) {
+        setTimeout(window.box.flashBox, 80);
+      }
+    }
+  }
+
+  gameOver() {
+    var context = window.box.canvasContext;
+    context.font = '48px serif';
+    context.textAlign = 'center';
+    context.fillStyle = 'rgb(255, 255, 255)';
+    context.fillText('Game Over', (window.box.width / 2), ((window.box.height - 48) / 2));
+  }
+
   draw() {
     self = this;
     if (this.canvas.getContext) {
@@ -50,7 +89,11 @@ class ViewBox {
 
 class Background {
   constructor() {
-    this.draw();
+    this.name = "Background"
+  }
+
+  updatePosition() {
+    //noop
   }
 
   draw() {
@@ -75,29 +118,73 @@ class Player {
     this.position = [Math.round(window.box.width * 0.15), (window.box.groundLevel - this.height)]; //(x, y)
     this.jumpStrength = 40;
     this.acceleration = 0;
+    this.score = 0;
+    this.lives = 3;
+    this.invincible = 0;
+    this.invincibilityDuration = 0;
   }
 
   input (e) {
     //console.log('event received');
-    if (e.keyCode == '38' && this.position[1] == (window.box.groundLevel - this.height)) {
+    if (e.keyCode == '38' && this.position[1] == (window.box.groundLevel - this.height) && !window.environment.stopTime) {
       this.acceleration = this.jumpStrength;
-      console.log(this.acceleration);
       this.updatePosition();
     }
   }
 
   updatePosition (modifier=null) {
-    console.log(this.acceleration);
-    if (modifier != null && modifier.gravity > 0 && this.position[1] < window.box.groundLevel ) {
+    if (modifier != null && modifier.gravity > 0 && this.position[1] < (window.box.groundLevel - this.height ) ) {
+      //gravity
       //console.log(modifier.gravity);
-      if (this.acceleration > 0) {
-        this.acceleration -= modifier.gravity;
-      }
-      if (this.acceleration < 0) {
-        this.acceleration = 0;
-      }
+      this.acceleration -= modifier.gravity;
+      this.position[1] -= this.acceleration;
+    } else if (this.acceleration > 0) {
+      //not gravity
+      this.position[1] -= this.acceleration;
     }
-    this.position[1] -= this.acceleration;
+  }
+
+  checkCollisions () {
+    self = this;
+    window.enemies.forEach(function(enemy) {
+      if (
+        self.invincible == 0
+        &&
+        (
+          (
+            enemy.position[0] >= self.position[0]
+            && enemy.position[0] <= ( self.position[0] + self.width )
+            && enemy.position[1] >= self.position[1]
+            && enemy.position[1] <= (self.position[1] + self.height)
+          )
+          ||
+          (
+            (enemy.position[0] + enemy.width) >= self.position[0]
+            && (enemy.position[0] + enemy.width) <= (self.position[0] + self.width)
+            && (enemy.position[1] + enemy.height) >= self.position[1]
+            && (enemy.position[1] + enemy.height) <= (self.position[1] + self.height)
+          )
+        )
+      ) {
+        // console.log('collision');
+        self.lives -= 1;
+        enemy.collisions++;
+        if (self.lives < 1) {
+          // console.log('game over');
+          //give stats one more draw to get rid of that last heart
+          window.box.draw();
+          window.environment.stopTime = true;
+          window.environment.gameOver = true;
+          window.box.gameOver();
+        }
+        if (!window.environment.stopTime) {
+          window.box.flashBox(3);
+        }
+        self.invincible = Date.now();
+        self.invincibilityDuration = 500;
+        // console.log('made invincible');
+      }
+    });
   }
 
   draw(context) {
@@ -106,11 +193,39 @@ class Player {
   }
 }
 
+class Stats {
+  constructor () {
+    this.name = "Stats"
+  }
+
+  updatePosition() {
+
+  }
+
+  draw(context) {
+    //get the player object
+    var player = null;
+    window.box.canvasElements.forEach(function (element) {
+      if (element.constructor.name == 'Player') {
+        player = element;
+      }
+    });
+
+    context.font = '24px sans-serif';
+    context.textAlign = 'left';
+    context.fillStyle = 'rgb(255, 255, 255)';
+    context.textBaseline = 'top';
+    var text = 'Score: ' + player.score + '  ';
+    for (var i = 0; i < player.lives; i++){
+      text += '\u2665 ';
+    }
+    context.fillText(text, 10, 10);
+  }
+}
+
 function checkKey(e) {
   var e = e || window.event;
-  //console.log(e.keyCode);
-
-  if ((e.keyCode) == '38'){
+  if ([38, 27].includes(e.keyCode)){
     //console.log('up arrow pressed');
     window.inputDispatcher.dispatchEvent(e);
   }
@@ -122,7 +237,21 @@ function checkKey(e) {
 
 class Environment {
   constructor() {
-    this.gravity = 10;
+    this.gravity = 8;
+    this.stopTime = false;
+    this.gameOver = false;
+  }
+
+  input (e) {
+    //escape key
+    if (e.keyCode == '27') {
+      if (this.stopTime && !this.gameOver) {
+        this.stopTime = false;
+        window.masterClock = window.setTimeout(timeLoop, 150);
+      } else {
+        this.stopTime = true;
+      }
+    }
   }
 }
 
@@ -133,7 +262,7 @@ class InputDispatcher {
 
   dispatchEvent(e){
     this.receivers.forEach(function (receiver) {
-      console.log('dispatching event');
+      //console.log('dispatching event to ' + receiver);
       receiver.input(e);
     });
   }
@@ -141,14 +270,115 @@ class InputDispatcher {
 
 function timeLoop()
 {
+  //get the player object
+  var player = null;
+  window.box.canvasElements.forEach(function (element) {
+    if (element.constructor.name == 'Player') {
+      player = element;
+    }
+  });
+
+  //check invincibility
+  // console.log('timeloop invincible? ' + player.invincible + ' -> ' + !!player.invincible + ' :: invincible for ' + (Date.now() - player.invincible) + ', should only last ' + player.invincibilityDuration);
+  if (player.invincible > 0 && (Date.now() - player.invincible) > player.invincibilityDuration){
+    player.invincible = 0;
+    // console.log('reset player invincibility');
+  }
+
   //apply gravity to objects
   window.box.applyGravity(window.environment.gravity);
+
+  var difficulty = 2000 - (player.score * 50);
+  var chance = 0.2 + (player.score * 0.01);
+  //consider generating a new enemy
+  if (Date.now() - window.lastRat > difficulty && Math.random() < chance) {
+    window.lastRat = Date.now();
+    window.enemies.push(ratFactory.generate());
+    window.box.addToCanvas(window.enemies[window.enemies.length - 1]);
+  }
 
   //redraw
   window.box.draw();
 
+  //check for collisions
+  player.checkCollisions();
+
   //set a new loop
-  window.setTimeout(timeLoop, 1000);
+  if (!window.environment.stopTime) {
+    window.masterClock = window.setTimeout(timeLoop, 50);
+  }
+}
+
+
+class Character {
+  constructor(attributes) {
+    //defaults, don't need some of this
+    this.name = name;
+
+    this.width = 25;
+    this.height = 25;
+    this.position = [Math.round(window.box.width - this.width), (window.box.groundLevel - this.height)]; //(x, y)
+    this.jumpStrength = 40;
+    this.acceleration = 0;
+    this.collisions = 0;
+    this.pointsValue = 1;
+
+    //override with actual
+    //TODO: switch to array_merge and then set each
+    for(var key in attributes) {
+      var value = attributes[key];
+      this[key] = value;
+    };
+  }
+
+  updatePosition() {
+    this.position[0] -= this.accelerationX;
+    if ((this.position[0] + this.width) < 0) {
+      //TODO: delete enemies once they're off screen
+      this.accelerationX = 0;
+      if (this.collisions == 0) {
+        //get the player object
+        var player = null;
+        window.box.canvasElements.forEach(function (element) {
+          if (element.constructor.name == 'Player') {
+            player = element;
+          }
+        });
+        player.score += this.pointsValue;
+        this.pointsValue = 0;
+      }
+    }
+  }
+
+  draw(context) {
+    context.fillStyle = 'rgb(200, 0, 0)';
+    context.fillRect(this.position[0], this.position[1], this.width, this.height);
+  }
+}
+
+class CharacterFactory {
+  constructor() {
+    // console.log('CharacterFactory');
+  }
+}
+
+class EnemyFactory extends CharacterFactory {
+  constructor() {
+    // console.log('EnemyFactory');
+    super();
+  }
+}
+
+class RatFactory extends EnemyFactory {
+  constructor() {
+    // console.log('RatFactory');
+    super();
+  }
+
+  generate() {
+    // console.log('generating');
+    return new Character({name: "rat", accelerationX: 20});
+  }
 }
 
 function main() {
@@ -156,18 +386,29 @@ function main() {
   window.box = new ViewBox();
 
   var background = new Background();
+  window.box.addToCanvas(background);
 
   var player = new Player('player');
-  box.addToCanvas(player);
-  box.draw();
+  window.box.addToCanvas(player);
 
-  window.inputDispatcher = new InputDispatcher([player]);
+  var stats = new Stats();
+  window.box.addToCanvas(stats);
+
   window.environment = new Environment();
+  window.inputDispatcher = new InputDispatcher([player, window.environment]);
+
+  window.ratFactory = new RatFactory();
+  window.enemies = [];
+  window.lastRat = Date.now();
+  window.enemies.push(window.ratFactory.generate());
+  window.box.addToCanvas(window.enemies[window.enemies.length - 1]);
+
+  window.box.draw();
 
   //check for movement
   document.onkeydown = checkKey;
 
-  window.setTimeout(timeLoop, 1000);
+  window.masterClock = window.setTimeout(timeLoop, 50);
 }
 
 main();
