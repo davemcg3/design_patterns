@@ -1,18 +1,6 @@
+// this should be a prototype, not a class
 class Character {
   constructor(attributes) {
-    //defaults, don't need some of this
-    this.name = name;
-
-    this.width = 25;
-    this.height = 25;
-    this.position = [Math.round(window.box.width - this.width), (window.box.groundLevel - this.height)]; //(x, y)
-    this.jumpStrength = 40;
-    this.acceleration = 0;
-    this.collisions = 0;
-    this.pointsValue = 1;
-
-    //override with actual
-    //TODO: switch to array_merge and then set each
     for(var key in attributes) {
       var value = attributes[key];
       this[key] = value;
@@ -26,12 +14,7 @@ class Character {
       this.accelerationX = 0;
       if (this.collisions == 0) {
         //get the player object
-        var player = null;
-        window.box.canvasElements.forEach(function (element) {
-          if (element.constructor.name == 'Player') {
-            player = element;
-          }
-        });
+        var player = window.box.player;
         player.score += this.pointsValue;
         this.pointsValue = 0;
       }

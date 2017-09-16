@@ -15,7 +15,7 @@ class Player {
 
   input (e) {
     //console.log('event received');
-    if (e.keyCode == '38' && this.position[1] == (window.box.groundLevel - this.height) && !window.environment.stopTime) {
+    if (e.keyCode == '38' && this.position[1] == (window.box.groundLevel - this.height) && !window.box.environment.stopTime) {
       this.acceleration = this.jumpStrength;
       this.updatePosition();
     }
@@ -24,7 +24,6 @@ class Player {
   updatePosition (modifier=null) {
     if (modifier != null && modifier.gravity > 0 && this.position[1] < (window.box.groundLevel - this.height ) ) {
       //gravity
-      //console.log(modifier.gravity);
       this.acceleration -= modifier.gravity;
       this.position[1] -= this.acceleration;
     } else if (this.acceleration > 0) {
@@ -35,7 +34,9 @@ class Player {
 
   checkCollisions () {
     self = this;
-    window.enemies.forEach(function(enemy) {
+    window.box.enemies.forEach(function(enemy) {
+      //to be clear: if we're not invincible and the bounds of our player are
+      //within the bounds of an enemy we have a collision
       if (
         self.invincible == 0
         &&
@@ -62,11 +63,11 @@ class Player {
           // console.log('game over');
           //give stats one more draw to get rid of that last heart
           window.box.draw();
-          window.environment.stopTime = true;
-          window.environment.gameOver = true;
+          window.box.environment.stopTime = true;
+          window.box.environment.gameOver = true;
           window.box.gameOver();
         }
-        if (!window.environment.stopTime) {
+        if (!window.box.environment.stopTime) {
           window.box.flashBox(3);
         }
         self.invincible = Date.now();

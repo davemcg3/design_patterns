@@ -16,6 +16,7 @@ class InputDispatcher {
   }
 
   dispatchEvent(e){
+    //TODO: Make this smarter so receivers only receive events they care about
     this.receivers.forEach(function (receiver) {
       //console.log('dispatching event to ' + receiver);
       receiver.input(e);
