@@ -1,9 +1,11 @@
 "use strict";
 
-// import ViewBox from '/js/board/ViewBox.js';
-// import InputDispatcher from '/js/control/InputDispatcher.js';
+import Editor from '/js/edit.js';
 
 (function main() {
+  //namespace
+  window.alphaBuilder = window.alphaBuilder || {};
+
   //route
   var splitpath = window.location.pathname.split("/").filter(function (input) {
     if (input !== "" && input !== undefined)
@@ -12,10 +14,11 @@
   });
   var action = splitpath.shift();
   var site = splitpath.shift();
+  var args = window.location.search.substr(1);
   switch(action){
     case "edit":
       //instantiate editor
-      console.log('edit');
+      window.alphaBuilder.editor = new Editor(site, args);
       break;
     case "view":
       //instantiate viewer
@@ -23,5 +26,7 @@
       break;
     default:
   }
+
+  window.alphaBuilder.editor.draw();
 
 })();
