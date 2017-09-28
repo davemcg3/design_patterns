@@ -35,8 +35,24 @@ class HtmlBuilder {
     htmlString += "\t" + this.label('name', name) + "\n";
     htmlString += "\t" + this.input(id, name, type, value, klass) + "\n";
     htmlString += "</div>";
-    htmlString += "\t" + this.submit(id, name, 'Confirm');
     return htmlString;
+  }
+
+  buildAnchor(link, text) {
+    return "<a href=\"" + link + "\">" + text + "</a>";
+  }
+
+  buildUl(elements) {
+    var htmlString = "<ul>\n";
+    elements.forEach(function(element) {
+      htmlString += "\t<li>" + element + "</li>\n";
+    });
+    htmlString += "</ul>\n";
+    return htmlString;
+  }
+
+  buildH1(element) {
+    return "<h1>" + element + "</h1>";
   }
 }
 

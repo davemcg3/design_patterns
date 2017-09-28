@@ -27,6 +27,6 @@ import Editor from '/js/edit.js';
     default:
   }
 
-  window.alphaBuilder.editor.draw();
+  //window.alphaBuilder.editor.draw();
 
 })();
