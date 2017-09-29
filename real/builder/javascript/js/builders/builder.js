@@ -20,13 +20,15 @@ class Builder {
       anchors.push(self.htmlBuilder.buildAnchor(prepend + element, element, anchorClass));
     });
     var htmlString = "";
-    htmlString = this.htmlBuilder.buildUl(anchors);
+    //buildUl(elements, ulClass=null, ulRole=null, liClass=null, liRole=null)
+    htmlString = this.htmlBuilder.buildUl(anchors, "nav nav-pills nav-stacked");
     return htmlString;
   }
 
-  buildInput (id, name=null, value=null, buttonText=null) {
+  buildInput (id, name=null, value=null, buttonText=null, deleteButton=false) {
     var htmlString = this.htmlBuilder.inputRow(id, name, null, value);
     htmlString += this.htmlBuilder.submit(id, name, buttonText)
+    if (deleteButton) htmlString += this.htmlBuilder.submit(id + '_' + deleteButton.toLowerCase(), name, deleteButton)
     return [htmlString, id];
   }
 
@@ -47,9 +49,10 @@ class Builder {
     content.forEach(function(page) {
       nav.push(self.htmlBuilder.buildAnchor("#static" + page.title.replace(' ', ''), page.title, null, "static" + page.title.replace(' ', ''), "tab", "tab"));
       let paneContent = [];
-      paneContent.push(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + "new", 'new attribute', null, 'Create').shift());
+      paneContent.push(self.htmlBuilder.submit("static_" + page.title.replace(' ', '') + '_remove',null,'Delete Page'));
+      paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + "new", 'new attribute', null, 'Create', null).shift(),null,'form'));
       for (var [key, value] of Object.entries(page)) {
-        paneContent.push(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update').shift());
+        paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update', 'Remove').shift(),null,'form'));
       }
       panes.push(self.htmlBuilder.buildWrapper(paneContent.join("\n"), "tabpanel", "tab-pane fade", "static" + page.title.replace(' ', '')));
     });

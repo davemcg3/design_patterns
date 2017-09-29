@@ -103,24 +103,34 @@ class Editor {
         self.createStaticPage(document.getElementById(valueToPass).value);
         break;
       case "staticUpdate":
-        // if (id.id === "#static_about_newButton") {
-        //   console.log(document.getElementById(id.id.replace("Button", "").replace("#", "")).value);
-        //   self.siteJson.pages[document.getElementById(id.id.replace("Button", "").replace("#", "")).value] = "";
-        // } else {
-          let target = id.id.split("_");
-          target[2] = target[2].replace("Button", "");
-          self.siteJson.pages.forEach(function(page){
-            if (page.title.replace("#", "").replace("Button", "") === target[1]) {
-              if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
-                page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
-              } else if (target[2] !== "new") {
-                page[target[2]] = document.getElementById(id.id.replace("#", "").replace("Button", "")).value;
-              } else {
-                console.log('failed to create or update attribute');
+        let target = id.id.split("_");
+        target[2] = target[2].replace("Button", "");
+        self.siteJson.pages.forEach(function(page){
+          if (page.title.replace("#", "").replace("Button", "") === target[1]) {
+            if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
+              page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
+            } else if (target[2] !== undefined && target[2].replace("Button", "") === "remove") {
+              //remove page
+              if (page.title === target[1]) {
+                let pagesRebuild = [];
+                self.siteJson.pages.forEach(function(deleteablePage){
+                  if (deleteablePage.title !== page.title){
+                    pagesRebuild.push(deleteablePage);
+                  }
+                });
+                self.siteJson.pages = pagesRebuild;
               }
+            } else if (target[3] !== undefined && target[3].replace("Button", "") === "remove") {
+              //remove attribute
+              delete (page[target[2]]);
+            } else if (target[2] !== "new") {
+              console.log(id.id.replace("#", "").replace("Button", ""));
+              page[target[2]] = document.getElementById(id.id.replace("#", "").replace("Button", "")).value;
+            } else {
+              console.log('failed to create or update attribute');
             }
-          });
-        // }
+          }
+        });
         break;
       default:
     }
@@ -277,6 +287,7 @@ class Editor {
     var strippedValue = div.textContent || div.innerText || "";
 
     var divContent = document.createElement('div');
+    divContent.setAttribute("class", "form");
     var returned = this.builder.buildInput(field, 'page', strippedValue, buttonText);
     divContent.innerHTML = returned.shift();
     var fieldToWatch = returned.shift();
@@ -299,7 +310,12 @@ class Editor {
 
   createStaticPage(title) {
     var staticPage = {
-      "title": title
+      "title": title,
+      "content": "",
+      "meta": {
+        "status": "active",
+        "visibility": "public"
+      }
     };
     if (this.siteJson.pages === undefined){
       this.siteJson.pages = [staticPage];
