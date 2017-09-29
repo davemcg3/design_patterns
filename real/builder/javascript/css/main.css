@@ -19,3 +19,7 @@ body {
 #editorHeading h1 {
   margin-top: 0;
 }
+
+.nav-tabs {
+  margin-bottom: 1em;
+}

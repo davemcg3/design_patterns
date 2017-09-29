@@ -26,25 +26,44 @@ class Editor {
   }
 
   route(action) {
-    //route to action
-    switch(action){
-      case "header":
-        this.editTextField("header");
-        break;
-      case "footer":
-        this.editTextField("footer");
-        break;
-      default:
+    if (action !== undefined){
+      this.lastAction = decodeURIComponent(action);
+    } else {
+      this.lastAction = action;
     }
+
+    if (this.lastAction !== undefined) {
+      this.storage.storeItem('lastAction', this.lastAction);
+    }
+
+    // //route to action
+    // switch(this.lastAction){
+    //   case "header":
+    //     this.editTextField("header");
+    //     break;
+    //   case "footer":
+    //     this.editTextField("footer");
+    //     break;
+    //   case "static page":
+    //     //this.editTextField("static", "Create");
+    //     this.draw();
+    //     break;
+    //   default:
+    // }
+    this.draw();
   }
 
-  newWatcher (idToWatch=null, className=null, callback=null, watchedEvent='onclick', valueToPass) {
+  newWatcher (idToWatch=null, className=null, callback=null, watchedEvent='onclick', valueToPass=null, passedInCollection=null) {
     self = this;
     var collection = null;
     if (idToWatch !== null) {
       collection = [document.getElementById(idToWatch)];
     } else {
-      collection = Array.from(document.getElementsByClassName(className));
+      if (passedInCollection === null) {
+        collection = Array.from(document.getElementsByClassName(className));
+      } else {
+        collection = passedInCollection;
+      }
     }
     collection.forEach(function (target) {
       // var target = document.getElementById(id + "Button");
@@ -54,10 +73,6 @@ class Editor {
         }
       }
     });
-
-    if (idToWatch === 'site') {
-      window.location = "edit/" + self.site + "?" + self.args;
-    }
 
     // var observer = new MutationObserver(function(mutations){
     //   mutations.forEach(function(mutation){
@@ -73,18 +88,48 @@ class Editor {
     switch(valueToPass){
       case "header":
         value = self.builder.buildHeader(document.getElementById(valueToPass).value);
+        self.siteJson[valueToPass] = value;
         break;
       case "footer":
         value = self.builder.buildFooter(document.getElementById(valueToPass).value);
+        self.siteJson[valueToPass] = value;
+        break;
+      case "site":
+        window.location = "/edit/" + document.getElementById(valueToPass).value + "?" + self.args;
+        return true;
+        break;
+      case "static":
+        // console.log('static page: ' + document.getElementById(valueToPass).value);
+        self.createStaticPage(document.getElementById(valueToPass).value);
+        break;
+      case "staticUpdate":
+        // if (id.id === "#static_about_newButton") {
+        //   console.log(document.getElementById(id.id.replace("Button", "").replace("#", "")).value);
+        //   self.siteJson.pages[document.getElementById(id.id.replace("Button", "").replace("#", "")).value] = "";
+        // } else {
+          let target = id.id.split("_");
+          target[2] = target[2].replace("Button", "");
+          self.siteJson.pages.forEach(function(page){
+            if (page.title.replace("#", "").replace("Button", "") === target[1]) {
+              if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
+                page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
+              } else if (target[2] !== "new") {
+                page[target[2]] = document.getElementById(id.id.replace("#", "").replace("Button", "")).value;
+              } else {
+                console.log('failed to create or update attribute');
+              }
+            }
+          });
+        // }
         break;
       default:
     }
-    self.siteJson[valueToPass] = value;
-    // console.log(JSON.stringify(self.siteJson));
     self.draw();
   }
 
   draw(){
+    self = this;
+
     if (document.getElementById("editorRoot") === null) {
       var editorRoot = document.createElement('div');
       editorRoot.setAttribute("id", "editorRoot");
@@ -107,7 +152,7 @@ class Editor {
       divContent.innerHTML = returned.shift();
       var fieldToWatch = returned.shift();
       editorRoot.append(divContent);
-      this.newWatcher(fieldToWatch);
+      this.newWatcher(fieldToWatch + "Button", null, this.watcherCallback, 'onclick', fieldToWatch);
     } else {
       //try to load the site details
       if (this.loadSite()) {
@@ -130,7 +175,7 @@ class Editor {
 
         //build left menu
         if (!document.getElementById("editorMenu")) {
-          var items = ["header", "footer", "nav", "sidebar", "new page", "new post"];
+          var items = ["header", "footer", "nav", "sidebar", "static page", "dynamic content"];
           var divContent = document.createElement('div');
           divContent.setAttribute("id", "editorMenu");
           divContent.innerHTML = this.builder.buildMenu("/edit/" + this.site + "?action=", items, 'menuLink');
@@ -164,7 +209,35 @@ class Editor {
         divContent.append(document.createTextNode(JSON.stringify(this.siteJson, null, '  ')));
         document.getElementById("editorStructureCol").append(divContent);
 
-        this.storage.storeItem('siteJson', JSON.stringify(this.siteJson));
+        //fill content area
+        if (this.lastAction === undefined || this.lastAction === null){
+          this.lastAction = this.storage.getItem('lastAction');
+        }
+        switch(this.lastAction) {
+          case "header":
+            this.editTextField("header");
+            break;
+          case "footer":
+            this.editTextField("footer");
+            break;
+          case "static page":
+            this.editTextField("static", "Create");
+            divContent = document.createElement('div');
+            divContent.setAttribute("id", "editorStaticTabs");
+            divContent.innerHTML = this.builder.buildTabs(this.siteJson.pages);
+            document.getElementById("editorContentCol").append(divContent);
+
+            let collection = document.getElementById("editorStaticTabs").querySelectorAll(".tab-pane button");
+            self.newWatcher(null, null, self.watcherCallback, 'onclick', "staticUpdate", collection);
+
+            //activate first tab, wrap in JQuery for bootstrap
+            $(document.getElementById("editorStaticTabs").querySelector("a:first-child")).tab('show');
+            break;
+          default:
+        }
+
+        //persist latest version
+        this.storage.storeItem(this.site, JSON.stringify(this.siteJson));
       }
     }
   }
@@ -173,7 +246,7 @@ class Editor {
     if (this.site !== null) {
       //grab the site structure from storage medium
       if (this.siteJson === undefined) {
-        if (this.siteJson = JSON.parse(this.storage.getItem('siteJson'))) {
+        if (this.siteJson = JSON.parse(this.storage.getItem(this.site))) {
           //noop
         } else {
           this.siteJson = {
@@ -186,25 +259,25 @@ class Editor {
     return false;
   }
 
-  editHeader(value) {
-    var divContent = document.createElement('div');
-    var returned = this.builder.buildInput('header');
-    divContent.innerHTML = returned.shift();
-    var fieldToWatch = returned.shift();
-    // document.getElementById("editorRoot").append(divContent);
-    document.getElementById("editorContentCol").innerHTML = '';
-    document.getElementById("editorContentCol").append(divContent);
-    this.newWatcher(fieldToWatch, this.watcherCallback);
-  }
+  // editHeader(value) {
+  //   var divContent = document.createElement('div');
+  //   var returned = this.builder.buildInput('header');
+  //   divContent.innerHTML = returned.shift();
+  //   var fieldToWatch = returned.shift();
+  //   // document.getElementById("editorRoot").append(divContent);
+  //   document.getElementById("editorContentCol").innerHTML = '';
+  //   document.getElementById("editorContentCol").append(divContent);
+  //   this.newWatcher(fieldToWatch, this.watcherCallback);
+  // }
 
-  editTextField(field) {
+  editTextField(field, buttonText='Confirm') {
     //strip tags
     var div = document.createElement("div");
     div.innerHTML = this.siteJson[field] || "";
     var strippedValue = div.textContent || div.innerText || "";
 
     var divContent = document.createElement('div');
-    var returned = this.builder.buildInput(field, strippedValue);
+    var returned = this.builder.buildInput(field, 'page', strippedValue, buttonText);
     divContent.innerHTML = returned.shift();
     var fieldToWatch = returned.shift();
     // document.getElementById("editorRoot").append(divContent);
@@ -223,6 +296,17 @@ class Editor {
       }
     });
   }
-}
 
+  createStaticPage(title) {
+    var staticPage = {
+      "title": title
+    };
+    if (this.siteJson.pages === undefined){
+      this.siteJson.pages = [staticPage];
+    } else {
+      this.siteJson.pages.push(staticPage);
+    }
+  }
+
+}
 export default Editor;

@@ -9,7 +9,7 @@ class HtmlBuilder {
 
   input (id=null, name=null, type='text', value=null, klass=null){
     var htmlString = "<input";
-    if (id !== null) htmlString += this.addAttribute('id', id);
+    if (id !== null) htmlString += this.addAttribute('id', id.replace("#", ""));
     if (name !== null) htmlString += this.addAttribute('name', name);
     if (type !== null) htmlString += this.addAttribute('type', type);
     if (value !== null) htmlString += this.addAttribute('value', value);
@@ -25,7 +25,7 @@ class HtmlBuilder {
   submit(id, name, value='Submit') {
     var htmlString = "<div class=\"form-group\">\n";
     htmlString += "\t<button id=\"" + id + "Button\" name=\"" + name + "Button\">" + value + "</button>";
-    htmlString += "</div";
+    htmlString += "</div>";
     return htmlString;
   }
 
@@ -38,19 +38,42 @@ class HtmlBuilder {
     return htmlString;
   }
 
-  buildAnchor(link, text, anchorClass=null) {
+  buildAnchor(link, text, anchorClass=null, ariacontrols=null, role=null, datatoggle=null) {
     var htmlString = "<a href=\"" + link + "\"";
     if (anchorClass !== null) {
       htmlString += " class=\"" + anchorClass + "\"";
+    }
+    if (ariacontrols !== null) {
+      htmlString += " aria-controls=\"" + ariacontrols + "\"";
+    }
+    if (role !== null) {
+      htmlString += " role=\"" + role + "\"";
+    }
+    if (datatoggle !== null) {
+      htmlString += " data-toggle=\"" + datatoggle + "\"";
     }
     htmlString += ">" + text + "</a>";
     return htmlString;
   }
 
-  buildUl(elements) {
-    var htmlString = "<ul>\n";
+  buildUl(elements, ulClass=null, ulRole=null, liClass=null, liRole=null) {
+    var htmlString = "<ul";
+    if (ulClass !== null) {
+      htmlString += " class=\"" + ulClass + "\"";
+    }
+    if (ulRole !== null) {
+      htmlString += " role=\"" + ulRole + "\"";
+    }
+    htmlString += ">\n";
     elements.forEach(function(element) {
-      htmlString += "\t<li>" + element + "</li>\n";
+      htmlString += "\t<li";
+      if (liClass !== null) {
+        htmlString += " class=\"" + liClass + "\"";
+      }
+      if (liRole !== null) {
+        htmlString += " role=\"" + liRole + "\"";
+      }
+      htmlString += ">" + element + "</li>\n";
     });
     htmlString += "</ul>\n";
     return htmlString;
@@ -62,6 +85,15 @@ class HtmlBuilder {
 
   buildSmall(element) {
     return "<small>" + element + "</small>";
+  }
+
+  buildWrapper(element, role=null, klass=null, id=null) {
+    var htmlString = "<div";
+    if (role !== null) htmlString += " role=\"" + role + "\"";
+    if (klass !== null) htmlString += " class=\"" + klass + "\"";
+    if (id !== null) htmlString += " id=\"" + id + "\"";
+    htmlString += ">" + element + "</div>";
+    return htmlString;
   }
 }
 
