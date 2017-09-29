@@ -1,0 +1,21 @@
+body {
+}
+
+/* structure */
+.container-fluid > .row > .col-md-2, .container-fluid > .row > .col-md-5 {
+  min-height: 100vh;
+}
+
+/* colors and style */
+.container-fluid > .row > .col-md-2, .container-fluid > .row > .col-md-5 {
+  padding: 1em;
+}
+
+.container-fluid > .row > .col-md-2 {
+  background-color: #004;
+  color: #fff;
+}
+
+#editorHeading h1 {
+  margin-top: 0;
+}

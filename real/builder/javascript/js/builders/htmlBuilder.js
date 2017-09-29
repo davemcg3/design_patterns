@@ -24,7 +24,7 @@ class HtmlBuilder {
 
   submit(id, name, value='Submit') {
     var htmlString = "<div class=\"form-group\">\n";
-    htmlString += "\t<button id=\"" + id + "Button\" + name=\"" + name + "\">" + value + "</button>";
+    htmlString += "\t<button id=\"" + id + "Button\" name=\"" + name + "Button\">" + value + "</button>";
     htmlString += "</div";
     return htmlString;
   }
@@ -38,8 +38,13 @@ class HtmlBuilder {
     return htmlString;
   }
 
-  buildAnchor(link, text) {
-    return "<a href=\"" + link + "\">" + text + "</a>";
+  buildAnchor(link, text, anchorClass=null) {
+    var htmlString = "<a href=\"" + link + "\"";
+    if (anchorClass !== null) {
+      htmlString += " class=\"" + anchorClass + "\"";
+    }
+    htmlString += ">" + text + "</a>";
+    return htmlString;
   }
 
   buildUl(elements) {
@@ -53,6 +58,10 @@ class HtmlBuilder {
 
   buildH1(element) {
     return "<h1>" + element + "</h1>";
+  }
+
+  buildSmall(element) {
+    return "<small>" + element + "</small>";
   }
 }
 

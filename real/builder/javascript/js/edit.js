@@ -1,8 +1,10 @@
 import Builder from '/js/builders/builder.js';
+import Storage from '/js/storage.js';
 
 class Editor {
   constructor(site=null, options=null){
     this.builder = new Builder();
+    this.storage = new Storage();
 
     this.args = options;
     if (options !== null) {
@@ -20,27 +22,41 @@ class Editor {
     //   this.loadSite();
     // }
 
+    this.route(this.action);
+  }
+
+  route(action) {
     //route to action
-    switch(this.action){
+    switch(action){
       case "header":
-        this.editHeader();
+        this.editTextField("header");
+        break;
+      case "footer":
+        this.editTextField("footer");
         break;
       default:
     }
   }
 
-  newWatcher (id=null, callback=null) {
+  newWatcher (idToWatch=null, className=null, callback=null, watchedEvent='onclick', valueToPass) {
     self = this;
-    if (id === null) return;
-    var target = document.getElementById(id + "Button");
-    target.onclick = function (event) {
-      self[id] = document.getElementById(id).value;
-      if (callback !== null) {
-        callback(self, id);
+    var collection = null;
+    if (idToWatch !== null) {
+      collection = [document.getElementById(idToWatch)];
+    } else {
+      collection = Array.from(document.getElementsByClassName(className));
+    }
+    collection.forEach(function (target) {
+      // var target = document.getElementById(id + "Button");
+      target[watchedEvent] = function (event) {
+        if (callback !== null) {
+          callback(event, self, target, valueToPass);
+        }
       }
-      if (id === 'site') {
-        window.location = "edit/" + self.site + "?" + self.args;
-      }
+    });
+
+    if (idToWatch === 'site') {
+      window.location = "edit/" + self.site + "?" + self.args;
     }
 
     // var observer = new MutationObserver(function(mutations){
@@ -52,19 +68,18 @@ class Editor {
     // observer.observe(target, config);
   }
 
-  watcherCallback (self=null, id) {
-    // console.log('watcherCallback');
-    // console.log(self);
-    // console.log(document.getElementById(id).value);
-    // console.log(JSON.stringify(self.siteJson));
+  watcherCallback (event=null, self=null, id, valueToPass) {
     var value = null;
-    switch(id){
+    switch(valueToPass){
       case "header":
-        value = self.builder.buildHeader(document.getElementById(id).value);
+        value = self.builder.buildHeader(document.getElementById(valueToPass).value);
+        break;
+      case "footer":
+        value = self.builder.buildFooter(document.getElementById(valueToPass).value);
         break;
       default:
     }
-    self.siteJson[id] = value;
+    self.siteJson[valueToPass] = value;
     // console.log(JSON.stringify(self.siteJson));
     self.draw();
   }
@@ -118,8 +133,9 @@ class Editor {
           var items = ["header", "footer", "nav", "sidebar", "new page", "new post"];
           var divContent = document.createElement('div');
           divContent.setAttribute("id", "editorMenu");
-          divContent.innerHTML = this.builder.buildMenu("/edit/" + this.site + "?action=", items);
+          divContent.innerHTML = this.builder.buildMenu("/edit/" + this.site + "?action=", items, 'menuLink');
           document.getElementById("editorMenuCol").append(divContent);
+          this.newWatcher(null, 'menuLink', this.hijackMenuLinks);
 
         }
 
@@ -147,6 +163,8 @@ class Editor {
         }
         divContent.append(document.createTextNode(JSON.stringify(this.siteJson, null, '  ')));
         document.getElementById("editorStructureCol").append(divContent);
+
+        this.storage.storeItem('siteJson', JSON.stringify(this.siteJson));
       }
     }
   }
@@ -155,8 +173,12 @@ class Editor {
     if (this.site !== null) {
       //grab the site structure from storage medium
       if (this.siteJson === undefined) {
-        this.siteJson = {
-          header: "<h1>" + this.site + "</h1>"
+        if (this.siteJson = JSON.parse(this.storage.getItem('siteJson'))) {
+          //noop
+        } else {
+          this.siteJson = {
+            header: "<h1>" + this.site + "</h1>"
+          }
         }
       }
       return true;
@@ -173,6 +195,33 @@ class Editor {
     document.getElementById("editorContentCol").innerHTML = '';
     document.getElementById("editorContentCol").append(divContent);
     this.newWatcher(fieldToWatch, this.watcherCallback);
+  }
+
+  editTextField(field) {
+    //strip tags
+    var div = document.createElement("div");
+    div.innerHTML = this.siteJson[field] || "";
+    var strippedValue = div.textContent || div.innerText || "";
+
+    var divContent = document.createElement('div');
+    var returned = this.builder.buildInput(field, strippedValue);
+    divContent.innerHTML = returned.shift();
+    var fieldToWatch = returned.shift();
+    // document.getElementById("editorRoot").append(divContent);
+    document.getElementById("editorContentCol").innerHTML = '';
+    document.getElementById("editorContentCol").append(divContent);
+    this.newWatcher(fieldToWatch + "Button", null, this.watcherCallback, 'onclick', fieldToWatch);
+  }
+
+  hijackMenuLinks(event, self=null, target=null, valueToPass=null) {
+    event.preventDefault();
+    target.href.split("?")[1].split("&").forEach(function(element){
+      var gets = element.split("=");
+      if (gets[0] === 'action') {
+        self.route(gets[1]);
+        return false;
+      }
+    });
   }
 }
 

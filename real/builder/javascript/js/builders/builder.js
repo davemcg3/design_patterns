@@ -13,25 +13,30 @@ class Builder {
     return [htmlString, 'site'];
   }
 
-  buildMenu(prepend, items){
+  buildMenu(prepend, items, anchorClass=null){
     self = this;
     var anchors = [];
     items.forEach(function (element) {
-      anchors.push(self.htmlBuilder.buildAnchor(prepend + element, element));
+      anchors.push(self.htmlBuilder.buildAnchor(prepend + element, element, anchorClass));
     });
     var htmlString = "";
     htmlString = this.htmlBuilder.buildUl(anchors);
     return htmlString;
   }
 
-  buildInput (element) {
-    var htmlString = this.htmlBuilder.inputRow('header');
-    htmlString += this.htmlBuilder.submit('header', 'header', 'Confirm')
+  buildInput (element, value=null) {
+    var htmlString = this.htmlBuilder.inputRow(element, null, null, value);
+    htmlString += this.htmlBuilder.submit(element, element, 'Confirm')
     return [htmlString, element];
   }
 
   buildHeader(element) {
     var htmlString = this.htmlBuilder.buildH1(element);
+    return htmlString;
+  }
+
+  buildFooter(element) {
+    var htmlString = this.htmlBuilder.buildSmall(element);
     return htmlString;
   }
 }
