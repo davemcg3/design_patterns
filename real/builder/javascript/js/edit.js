@@ -17,10 +17,8 @@ class Editor {
     }
 
     this.site = site;
-    this.draw();
-    // if (this.site !== null) {
-    //   this.loadSite();
-    // }
+
+    this.requiredFields = ['title', 'content', 'meta'];
 
     this.route(this.action);
   }
@@ -67,8 +65,8 @@ class Editor {
     }
     collection.forEach(function (target) {
       // var target = document.getElementById(id + "Button");
-      target[watchedEvent] = function (event) {
-        if (callback !== null) {
+      if (callback !== null) {
+        target[watchedEvent] = function (event) {
           callback(event, self, target, valueToPass);
         }
       }
@@ -104,13 +102,19 @@ class Editor {
         break;
       case "staticUpdate":
         let target = id.id.split("_");
+        self.lastPageEdited = target[1];
+        self.storage.storeItem('lastPageEdited', self.lastPageEdited);
         target[2] = target[2].replace("Button", "");
         self.siteJson.pages.forEach(function(page){
+          // if we're on the right page
           if (page.title.replace("#", "").replace("Button", "") === target[1]) {
+
+            // if we're adding a new attribute
             if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
               page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
+
+            // if we're removing a page
             } else if (target[2] !== undefined && target[2].replace("Button", "") === "remove") {
-              //remove page
               if (page.title === target[1]) {
                 let pagesRebuild = [];
                 self.siteJson.pages.forEach(function(deleteablePage){
@@ -120,12 +124,16 @@ class Editor {
                 });
                 self.siteJson.pages = pagesRebuild;
               }
-            } else if (target[3] !== undefined && target[3].replace("Button", "") === "remove") {
-              //remove attribute
-              delete (page[target[2]]);
+
+            // if we're removing an attribute
+          } else if (target[target.length-1] !== undefined && target[target.length-1].replace("Button", "") === "remove") {
+              self.removeAttribute(self, page, target, 2);
+
+            // if we're updating an element
             } else if (target[2] !== "new") {
-              console.log(id.id.replace("#", "").replace("Button", ""));
-              page[target[2]] = document.getElementById(id.id.replace("#", "").replace("Button", "")).value;
+              self.updateAttribute(page, target, 2, id);
+
+            // probably shoulldn't be here, might not be able to get here
             } else {
               console.log('failed to create or update attribute');
             }
@@ -135,6 +143,47 @@ class Editor {
       default:
     }
     self.draw();
+  }
+
+  updateAttribute(page, target, targetPointer=2, id) {
+    if (typeof(page[target[targetPointer].replace("Button", "")]) === "object") {
+      self.updateAttribute(page[target[targetPointer]], target, ++targetPointer, id)
+    } else {
+      // can't set the title attribute to blank
+      if (
+        (
+          document.getElementById(id.id.replace("#", "").replace("Button", "")).value === ""
+          &&
+          (target[targetPointer] !== 'title')
+        )
+        ||
+        document.getElementById(id.id.replace("#", "").replace("Button", "")).value !== ""
+      )
+      {
+        try {
+          // try to convert to a JSON object first
+          page[target[targetPointer].replace("Button", "")] = JSON.parse(document.getElementById(id.id.replace("#", "").replace("Button", "")).value);
+        } catch (e) {
+          // if it won't convert to a JSON object it's either malformed JSON or just a regular string so set it directly
+            page[target[targetPointer].replace("Button", "")] = document.getElementById(id.id.replace("#", "").replace("Button", "")).value;
+        }
+      } else {
+        console.log('Cannot perform action that would make content unreachable.');
+      }
+
+    }
+  }
+
+  removeAttribute(self, page, target, targetPointer=2){
+    if (typeof(page[target[targetPointer]]) === "object") {
+      self.removeAttribute(self, page[target[targetPointer]], target, ++targetPointer);
+    } else {
+      if (!self.requiredFields.includes(target[targetPointer])) {
+        delete (page[target[targetPointer]]);
+      } else {
+        console.log("Cannot remove required field.");
+      }
+    }
   }
 
   draw(){
@@ -191,7 +240,6 @@ class Editor {
           divContent.innerHTML = this.builder.buildMenu("/edit/" + this.site + "?action=", items, 'menuLink');
           document.getElementById("editorMenuCol").append(divContent);
           this.newWatcher(null, 'menuLink', this.hijackMenuLinks);
-
         }
 
         //2) content area
@@ -236,12 +284,35 @@ class Editor {
             divContent.setAttribute("id", "editorStaticTabs");
             divContent.innerHTML = this.builder.buildTabs(this.siteJson.pages);
             document.getElementById("editorContentCol").append(divContent);
+            //$("[data-recursion]").filter(function(){ return $(this).data("recursion") > 0; }).css('background-color', 'red');
+            var recursionList = [];
+            document.querySelectorAll("[data-recursion]").forEach(function(element){
+              if (element.getAttribute("data-recursion") > 0) {
+                recursionList.push(element);
+              }
+            });
+            recursionList.forEach(function(element){
+              if (element.style["padding-left"] === "") {
+                element.style["padding-left"] = (element.getAttribute("data-recursion") * 2) + "em";
+                element.style["border-left"] = "1px solid #00b";
+              } else {
+                element.style["padding-left"] = element.style["padding-left"].split("em")[0]++ + "em";
+                element.style["border-left"] = (element.getAttribute("data-recursion") + 2) + "px solid #000";
+              }
+              console.log(element.style["margin-left"]);
 
+            });
             let collection = document.getElementById("editorStaticTabs").querySelectorAll(".tab-pane button");
             self.newWatcher(null, null, self.watcherCallback, 'onclick', "staticUpdate", collection);
 
             //activate first tab, wrap in JQuery for bootstrap
-            $(document.getElementById("editorStaticTabs").querySelector("a:first-child")).tab('show');
+            var querySelector = "a:first-child";
+            if (self.lastPageEdited !== undefined) {
+              querySelector = "a[href$=" + self.lastPageEdited + "]";
+            } else if (this.storage.getItem('lastPageEdited') !== null) {
+              querySelector = "a[href$=" + this.storage.getItem('lastPageEdited') + "]";
+            }
+            $(document.getElementById("editorStaticTabs").querySelector(querySelector)).tab('show');
             break;
           default:
         }

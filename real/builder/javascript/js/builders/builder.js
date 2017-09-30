@@ -51,9 +51,7 @@ class Builder {
       let paneContent = [];
       paneContent.push(self.htmlBuilder.submit("static_" + page.title.replace(' ', '') + '_remove',null,'Delete Page'));
       paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + "new", 'new attribute', null, 'Create', null).shift(),null,'form'));
-      for (var [key, value] of Object.entries(page)) {
-        paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update', 'Remove').shift(),null,'form'));
-      }
+      self.buildFieldEditor(self, page, paneContent);
       panes.push(self.htmlBuilder.buildWrapper(paneContent.join("\n"), "tabpanel", "tab-pane fade", "static" + page.title.replace(' ', '')));
     });
 
@@ -62,6 +60,23 @@ class Builder {
     var tabContent = ul + tabPanes;
     var htmlString = this.htmlBuilder.buildWrapper(tabContent);
     return htmlString;
+
+  }
+
+  // because recurion is a beautiful creature
+  buildFieldEditor(self, page, paneContent, recursionLevel=0) {
+    for (var [key, value] of Object.entries(page)) {
+      if (typeof(value) === "object") {
+        // because recursion is a violent creature
+        //TODO: Only set if not already set
+        value.title = page.title + '_' + key;
+        // we must go deeper!
+        self.buildFieldEditor(self, value, paneContent, recursionLevel + 1);
+      } else {
+        // time for a kick
+        paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update', 'Remove').shift(),null,'form', null, recursionLevel));
+      }
+    }
 
   }
 }

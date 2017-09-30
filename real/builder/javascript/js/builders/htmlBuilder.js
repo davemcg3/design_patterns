@@ -87,11 +87,12 @@ class HtmlBuilder {
     return "<small>" + element + "</small>";
   }
 
-  buildWrapper(element, role=null, klass=null, id=null) {
+  buildWrapper(element, role=null, klass=null, id=null, data_recursion=null) {
     var htmlString = "<div";
     if (role !== null) htmlString += " role=\"" + role + "\"";
     if (klass !== null) htmlString += " class=\"" + klass + "\"";
     if (id !== null) htmlString += " id=\"" + id + "\"";
+    if (data_recursion !== null) htmlString += " data-recursion=\"" + data_recursion + "\"";
     htmlString += ">" + element + "</div>";
     return htmlString;
   }
