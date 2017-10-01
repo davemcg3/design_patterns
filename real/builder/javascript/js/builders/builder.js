@@ -1,8 +1,9 @@
 import HtmlBuilder from '/js/builders/htmlBuilder.js';
 
 class Builder {
-  constructor(){
+  constructor(skippedFields=null){
     this.htmlBuilder = new HtmlBuilder();
+    this.skippedFields = skippedFields;
   }
 
   getSite(){
@@ -43,6 +44,9 @@ class Builder {
   }
 
   buildTabs(content) {
+    if (content === undefined) {
+      return;
+    }
     var self = this;
     var nav = [];
     var panes = [];
@@ -69,12 +73,15 @@ class Builder {
       if (typeof(value) === "object") {
         // because recursion is a violent creature
         //TODO: Only set if not already set
-        value.title = page.title + '_' + key;
+        value.context = page.title + '_' + key;
         // we must go deeper!
         self.buildFieldEditor(self, value, paneContent, recursionLevel + 1);
       } else {
         // time for a kick
-        paneContent.push(self.htmlBuilder.buildWrapper(self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update', 'Remove').shift(),null,'form', null, recursionLevel));
+        if (!this.skippedFields.includes(key)){
+          paneContent.push(self.htmlBuilder.buildWrapper(self.htmlBuilder.label(null, page.context.split("_").join(" > ")) + self.buildInput("#static_" + page.title.replace(' ', '') + "_" + key, key, value, 'Update', 'Remove').shift(),null,'form', null, recursionLevel));
+          // I probably should be returning the value and pushing from the calling function, but it's easier to pass in the reference and push the component from here. Maybe something to look at on a refactor.
+        }
       }
     }
 

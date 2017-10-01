@@ -3,7 +3,10 @@ import Storage from '/js/storage.js';
 
 class Editor {
   constructor(site=null, options=null){
-    this.builder = new Builder();
+    this.requiredFields = ['content', 'context', 'meta', 'title'];
+    this.skippedFields = []; //['context', 'title'] //need a better strategry, looked confusing because you couldn't see some of the root elements, maybe throw a warning if they're changing something that could break things
+
+    this.builder = new Builder(this.skippedFields);
     this.storage = new Storage();
 
     this.args = options;
@@ -17,8 +20,6 @@ class Editor {
     }
 
     this.site = site;
-
-    this.requiredFields = ['title', 'content', 'meta'];
 
     this.route(this.action);
   }
@@ -282,7 +283,7 @@ class Editor {
             this.editTextField("static", "Create");
             divContent = document.createElement('div');
             divContent.setAttribute("id", "editorStaticTabs");
-            divContent.innerHTML = this.builder.buildTabs(this.siteJson.pages);
+            divContent.innerHTML = this.builder.buildTabs(this.siteJson.pages) || 'Create a page!';
             document.getElementById("editorContentCol").append(divContent);
             //$("[data-recursion]").filter(function(){ return $(this).data("recursion") > 0; }).css('background-color', 'red');
             var recursionList = [];
@@ -292,14 +293,13 @@ class Editor {
               }
             });
             recursionList.forEach(function(element){
-              if (element.style["padding-left"] === "") {
-                element.style["padding-left"] = (element.getAttribute("data-recursion") * 2) + "em";
+              if (element.style["margin-left"] === "") {
+                element.style["margin-left"] = (element.getAttribute("data-recursion") * 2) + "em";
                 element.style["border-left"] = "1px solid #00b";
               } else {
-                element.style["padding-left"] = element.style["padding-left"].split("em")[0]++ + "em";
-                element.style["border-left"] = (element.getAttribute("data-recursion") + 2) + "px solid #000";
+                element.style["margin-left"] = (element.getAttribute("data-recursion") * 2) + "em";
+                element.style["border-left"] = "1px solid #00b";
               }
-              console.log(element.style["margin-left"]);
 
             });
             let collection = document.getElementById("editorStaticTabs").querySelectorAll(".tab-pane button");
@@ -382,10 +382,13 @@ class Editor {
   createStaticPage(title) {
     var staticPage = {
       "title": title,
+      "context": title,
       "content": "",
       "meta": {
+        "title": title + "_meta",
         "status": "active",
-        "visibility": "public"
+        "visibility": "public",
+        "context": title + "_meta"
       }
     };
     if (this.siteJson.pages === undefined){
