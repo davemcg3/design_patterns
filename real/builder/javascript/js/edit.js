@@ -84,6 +84,7 @@ class Editor {
 
   watcherCallback (event=null, self=null, id, valueToPass) {
     var value = null;
+    var target = null;
     switch(valueToPass){
       case "header":
         value = self.builder.buildHeader(document.getElementById(valueToPass).value);
@@ -97,12 +98,24 @@ class Editor {
         window.location = "/edit/" + document.getElementById(valueToPass).value + "?" + self.args;
         return true;
         break;
+      case "navUpdate":
+        var input = id.id.replace("Button", "");
+        var inputValue = document.getElementById(input).value;
+        var parts = input.split("_");
+        target = self.siteJson.nav.forEach(function(link){
+          if (link.link === parts[0]){
+            link[parts[1]] = inputValue;
+          }
+        });
+
+        break;
       case "static":
         // console.log('static page: ' + document.getElementById(valueToPass).value);
         self.createStaticPage(document.getElementById(valueToPass).value);
         break;
       case "staticUpdate":
-        let target = id.id.split("_");
+        // I can probably make this more generic to update any part of the JSON
+        target = id.id.split("_");
         self.lastPageEdited = target[1];
         self.storage.storeItem('lastPageEdited', self.lastPageEdited);
         target[2] = target[2].replace("Button", "");
@@ -111,6 +124,7 @@ class Editor {
           if (page.title.replace("#", "").replace("Button", "") === target[1]) {
 
             // if we're adding a new attribute
+            pagesRebuild.push(deleteablePage);
             if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
               page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
 
@@ -120,7 +134,6 @@ class Editor {
                 let pagesRebuild = [];
                 self.siteJson.pages.forEach(function(deleteablePage){
                   if (deleteablePage.title !== page.title){
-                    pagesRebuild.push(deleteablePage);
                   }
                 });
                 self.siteJson.pages = pagesRebuild;
@@ -279,6 +292,9 @@ class Editor {
           case "footer":
             this.editTextField("footer");
             break;
+          case "nav":
+            this.buildNav("nav");
+            break;
           case "static page":
             this.editTextField("static", "Create");
             divContent = document.createElement('div');
@@ -366,6 +382,43 @@ class Editor {
     document.getElementById("editorContentCol").innerHTML = '';
     document.getElementById("editorContentCol").append(divContent);
     this.newWatcher(fieldToWatch + "Button", null, this.watcherCallback, 'onclick', fieldToWatch);
+  }
+
+  buildNav(field) {
+    var self = this;
+    var divContent = document.createElement("div");
+    divContent.style["border-top"] = "1px solid rgb(238, 238, 238)";
+    divContent.style["padding-top"] = "1em";
+    var nav = this.builder.buildNav(this.siteJson);
+    this.siteJson.nav = nav;
+    nav.forEach(function(element){
+      let linkAttributes = [];
+      for (var [key, val] of Object.entries(element)) {
+        linkAttributes.push(self.editNavField(element.value + "_" + key, val, 'Update'));
+      }
+      // this should be moved into the builder
+      var label = document.createElement("label");
+      label.innerHTML = element.value;
+      divContent.append(label);
+      linkAttributes.forEach(function(attribute){
+        divContent.append(attribute);
+      });
+    });
+    document.getElementById("editorContentCol").innerHTML = '';
+    document.getElementById("editorContentCol").append(divContent);
+    //newWatcher (idToWatch=null, className=null, callback=null, watchedEvent='onclick', valueToPass=null, passedInCollection=null)
+    this.newWatcher(null, "editNav", this.watcherCallback, 'onclick', "navUpdate");
+  }
+
+  editNavField(field, value, buttonText='Confirm'){
+    var divContent = document.createElement('div');
+    divContent.setAttribute("class", "form");
+    //buildInput (id, name=null, value=null, buttonText=null, deleteButton=false, buttonClass=null)
+    var returned = this.builder.buildInput(field, field, value, buttonText, false, 'editNav');
+    var builtForm = returned.shift();
+    var fieldToWatch = returned.shift();
+    divContent.innerHTML = builtForm;
+    return divContent;
   }
 
   hijackMenuLinks(event, self=null, target=null, valueToPass=null) {

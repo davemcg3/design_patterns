@@ -26,9 +26,9 @@ class Builder {
     return htmlString;
   }
 
-  buildInput (id, name=null, value=null, buttonText=null, deleteButton=false) {
+  buildInput (id, name=null, value=null, buttonText=null, deleteButton=false, buttonClass=null) {
     var htmlString = this.htmlBuilder.inputRow(id, name, null, value);
-    htmlString += this.htmlBuilder.submit(id, name, buttonText)
+    htmlString += this.htmlBuilder.submit(id, name, buttonText, buttonClass);
     if (deleteButton) htmlString += this.htmlBuilder.submit(id + '_' + deleteButton.toLowerCase(), name, deleteButton)
     return [htmlString, id];
   }
@@ -41,6 +41,60 @@ class Builder {
   buildFooter(element) {
     var htmlString = this.htmlBuilder.buildSmall(element);
     return htmlString;
+  }
+
+  buildNav(structure=null) {
+    if (structure === null) return null;
+    var expected = this.buildExpectedNav(structure);
+    var options = this.checkNavOptions(structure.nav);
+    return this.buildThisNav(expected, options)
+  }
+
+  buildExpectedNav(structure=null) {
+    if (structure === null) return null;
+    var self = this;
+    var returned = [];
+    if (structure.pages !== undefined) {
+      // add static pages
+      structure.pages.forEach(function(element) {
+        returned.push(element.title);
+      });
+      // add dynamic content
+      // not implemented yet!
+    }
+    return returned;
+  }
+
+  checkNavOptions(preexistingNav=null) {
+    // {
+    //   link: "",
+    //   value: "",
+    //   klass: "",
+    //   position: ""
+    // }
+    if (preexistingNav === null) return null;
+    var self = this;
+    var returned = preexistingNav;
+    // not entirely sure what I want to do in here yet, but I'm sure something should be happening
+    // I suspect I'll need to pass in the expected nav as well and then check each element of that against the set options in the preexistingNav and make any necessary adjustments
+    // so, noop for now
+    return returned;
+  }
+
+  buildThisNav(expected, options) {
+    if (expected === null) return null;
+    // [{
+    //   link: "",
+    //   value: "",
+    //   klass: "",
+    //   position: ""
+    // }]
+    var self = this;
+    var returned = [];
+    expected.forEach(function(element){
+      returned.push({"link": element, "value": element, "klass": "", "position": ""})
+    });
+    return returned;
   }
 
   buildTabs(content) {

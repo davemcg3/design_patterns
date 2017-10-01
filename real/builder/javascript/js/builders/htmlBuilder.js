@@ -22,9 +22,9 @@ class HtmlBuilder {
     return "<label for=\"" + name + "\">" + value + "</label>"
   }
 
-  submit(id, name, value='Submit') {
+  submit(id, name, value='Submit', klass=null) {
     var htmlString = "<div class=\"form-group\">\n";
-    htmlString += "\t<button id=\"" + id + "Button\" name=\"" + name + "Button\">" + value + "</button>";
+    htmlString += "\t<button id=\"" + id + "Button\" name=\"" + name + "Button\" class=\"" + klass + "\">" + value + "</button>";
     htmlString += "</div>";
     return htmlString;
   }
