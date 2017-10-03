@@ -37,3 +37,36 @@ body {
 label {
   display: block;
 }
+
+#iframe {
+  height: 60vh;
+  width: 100%;
+}
+
+#structure {
+  height: 40vh;
+}
+
+
+/* These styles are cheating it and should be configurable in the edit page */
+#viewerRoot .row:first-child{
+  background-color: #000;
+  color: #fff;
+}
+
+#viewerRoot .row:last-child, #contentRow .col-md-3:first-child {
+  background-color: #69c;
+  color: #fff;
+}
+
+#contentRow .col-md-3:first-child a, #contentRow .col-md-3:first-child a:visited {
+  color: #fff;
+}
+
+#contentRow .col-md-3:first-child a:hover {
+  background-color: #000;
+}
+
+#viewerRoot .row:last-child {
+  text-align: right;
+}

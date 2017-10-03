@@ -124,7 +124,7 @@ class Editor {
           if (page.title.replace("#", "").replace("Button", "") === target[1]) {
 
             // if we're adding a new attribute
-            pagesRebuild.push(deleteablePage);
+            //pagesRebuild.push(deleteablePage);
             if (target[2] == "new" && page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] === undefined) {
               page[document.getElementById(id.id.replace("#", "").replace("Button", "")).value] = "";
 
@@ -248,7 +248,7 @@ class Editor {
 
         //build left menu
         if (!document.getElementById("editorMenu")) {
-          var items = ["header", "footer", "nav", "sidebar", "static page", "dynamic content"];
+          var items = ["header", "footer", "nav", "sidebar", "static page"]; //, "dynamic content" // dynamic content not implemented yet
           var divContent = document.createElement('div');
           divContent.setAttribute("id", "editorMenu");
           divContent.innerHTML = this.builder.buildMenu("/edit/" + this.site + "?action=", items, 'menuLink');
@@ -272,6 +272,17 @@ class Editor {
           document.getElementById("contentRow").append(divContent);
         }
 
+        //add a viewer
+        if (divContent = document.getElementById("iframe")) {
+          divContent.innerHTML = '';
+        } else {
+          divContent = document.createElement('iframe');
+          divContent.setAttribute("id", "iframe");
+          divContent.src = "/view/" + this.site;
+        }
+        document.getElementById("editorStructureCol").append(divContent);
+
+        //add the json structure viewer
         if (divContent = document.getElementById("structure")) {
           divContent.innerHTML = '';
         } else {
@@ -280,6 +291,9 @@ class Editor {
         }
         divContent.append(document.createTextNode(JSON.stringify(this.siteJson, null, '  ')));
         document.getElementById("editorStructureCol").append(divContent);
+
+        //setup the site nav by default
+        this.buildNav();
 
         //fill content area
         if (this.lastAction === undefined || this.lastAction === null){
@@ -294,6 +308,9 @@ class Editor {
             break;
           case "nav":
             this.buildNav("nav");
+            break;
+          case sidebar:
+            this.buildSidebar("sidebar");
             break;
           case "static page":
             this.editTextField("static", "Create");
@@ -432,13 +449,18 @@ class Editor {
     });
   }
 
+  buildSidebar(field){
+    //noop
+    //TODO: build out a structure for holding widgets
+  }
+
   createStaticPage(title) {
     var staticPage = {
       "title": title,
       "context": title,
       "content": "",
+      "title": title + "_meta",
       "meta": {
-        "title": title + "_meta",
         "status": "active",
         "visibility": "public",
         "context": title + "_meta"
