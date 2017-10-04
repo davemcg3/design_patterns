@@ -14,7 +14,7 @@ class DefaultEngine extends Engine {
   }
 
   output(json){
-    console.log("(" + typeof(json) + ") " + json);
+    //console.log("(" + typeof(json) + ") " + json);
     switch(typeof(json)){
       case "string":
         var row = document.createElement('div');
@@ -69,12 +69,20 @@ hereDoc += `
     var self = this;
     var htmlString = document.createElement('div');
     htmlString.setAttribute("class", "col-md-" + width);
+    var counter = 0;
+    var firstPageHTML = '';
     json.forEach(function(page){
+      if (counter++ === 0) {
+        firstPageHTML = page.content;
+      }
       if (page.title === thisPage){
         // need to check meta data and visibility, etc. Not implemented yet.
         htmlString.innerHTML = page.content;
       }
     });
+    if (htmlString.innerHTML === '') {
+      htmlString.innerHTML = firstPageHTML;
+    }
     document.getElementById('contentRow').append(htmlString);
   }
 

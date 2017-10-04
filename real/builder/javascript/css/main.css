@@ -55,6 +55,7 @@ label {
 }
 
 #viewerRoot .row:last-child, #contentRow .col-md-3:first-child {
+  height: 100%;
   background-color: #69c;
   color: #fff;
 }
@@ -67,6 +68,6 @@ label {
   background-color: #000;
 }
 
-#viewerRoot .row:last-child {
+footer {
   text-align: right;
 }

@@ -39,7 +39,7 @@ class Builder {
   }
 
   buildFooter(element) {
-    var htmlString = this.htmlBuilder.buildSmall(element);
+    var htmlString = this.htmlBuilder.buildFooter(this.htmlBuilder.buildSmall(element));
     return htmlString;
   }
 
@@ -126,8 +126,8 @@ class Builder {
     for (var [key, value] of Object.entries(page)) {
       if (typeof(value) === "object") {
         // because recursion is a violent creature
-        //TODO: Only set if not already set
         value.context = page.title + '_' + key;
+        //TODO: Only set if not already set
         // we must go deeper!
         self.buildFieldEditor(self, value, paneContent, recursionLevel + 1);
       } else {

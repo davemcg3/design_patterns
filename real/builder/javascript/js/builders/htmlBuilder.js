@@ -87,6 +87,10 @@ class HtmlBuilder {
     return "<small>" + element + "</small>";
   }
 
+  buildFooter(element) {
+    return "<footer>" + element + "</footer>"
+  }
+
   buildWrapper(element, role=null, klass=null, id=null, data_recursion=null) {
     var htmlString = "<div";
     if (role !== null) htmlString += " role=\"" + role + "\"";

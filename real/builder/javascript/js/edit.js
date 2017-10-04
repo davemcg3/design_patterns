@@ -110,8 +110,8 @@ class Editor {
 
         break;
       case "static":
-        // console.log('static page: ' + document.getElementById(valueToPass).value);
         self.createStaticPage(document.getElementById(valueToPass).value);
+        self.siteJson.nav = self.builder.buildNav(self.siteJson);
         break;
       case "staticUpdate":
         // I can probably make this more generic to update any part of the JSON
@@ -133,11 +133,17 @@ class Editor {
               if (page.title === target[1]) {
                 let pagesRebuild = [];
                 self.siteJson.pages.forEach(function(deleteablePage){
-                  if (deleteablePage.title !== page.title){
+                  if (deleteablePage.title !== target[1]){
+                    pagesRebuild.push(deleteablePage);
                   }
                 });
-                self.siteJson.pages = pagesRebuild;
+                if (pagesRebuild.length === 0) {
+                  delete self.siteJson.pages;
+                } else {
+                  self.siteJson.pages = pagesRebuild;
+                }
               }
+              self.siteJson.nav = self.builder.buildNav(self.siteJson);
 
             // if we're removing an attribute
           } else if (target[target.length-1] !== undefined && target[target.length-1].replace("Button", "") === "remove") {
@@ -147,7 +153,7 @@ class Editor {
             } else if (target[2] !== "new") {
               self.updateAttribute(page, target, 2, id);
 
-            // probably shoulldn't be here, might not be able to get here
+            // probably shouldn't be here, might not be able to get here
             } else {
               console.log('failed to create or update attribute');
             }
@@ -299,6 +305,7 @@ class Editor {
         if (this.lastAction === undefined || this.lastAction === null){
           this.lastAction = this.storage.getItem('lastAction');
         }
+
         switch(this.lastAction) {
           case "header":
             this.editTextField("header");
@@ -309,10 +316,11 @@ class Editor {
           case "nav":
             this.buildNav("nav");
             break;
-          case sidebar:
+          case "sidebar":
             this.buildSidebar("sidebar");
             break;
           case "static page":
+          default:
             this.editTextField("static", "Create");
             divContent = document.createElement('div');
             divContent.setAttribute("id", "editorStaticTabs");
@@ -339,15 +347,21 @@ class Editor {
             self.newWatcher(null, null, self.watcherCallback, 'onclick', "staticUpdate", collection);
 
             //activate first tab, wrap in JQuery for bootstrap
-            var querySelector = "a:first-child";
-            if (self.lastPageEdited !== undefined) {
-              querySelector = "a[href$=" + self.lastPageEdited + "]";
-            } else if (this.storage.getItem('lastPageEdited') !== null) {
-              querySelector = "a[href$=" + this.storage.getItem('lastPageEdited') + "]";
+            if (self.siteJson.pages !== undefined){
+              var querySelector = "a:first-child";
+              let lpe = '';
+              if (self.lastPageEdited !== undefined) {
+                lpe = self.lastPageEdited;
+              } else if (this.storage.getItem('lastPageEdited') !== null) {
+                lpe = this.storage.getItem('lastPageEdited');
+              }
+              self.siteJson.pages.forEach(function(page){
+                if (page.title === lpe){
+                  querySelector = "a[href$=" + lpe + "]";
+                }
+              });
+              $(document.getElementById("editorStaticTabs").querySelector(querySelector)).tab('show');
             }
-            $(document.getElementById("editorStaticTabs").querySelector(querySelector)).tab('show');
-            break;
-          default:
         }
 
         //persist latest version
@@ -395,7 +409,7 @@ class Editor {
     var returned = this.builder.buildInput(field, 'page', strippedValue, buttonText);
     divContent.innerHTML = returned.shift();
     var fieldToWatch = returned.shift();
-    // document.getElementById("editorRoot").append(divContent);
+
     document.getElementById("editorContentCol").innerHTML = '';
     document.getElementById("editorContentCol").append(divContent);
     this.newWatcher(fieldToWatch + "Button", null, this.watcherCallback, 'onclick', fieldToWatch);
@@ -408,19 +422,24 @@ class Editor {
     divContent.style["padding-top"] = "1em";
     var nav = this.builder.buildNav(this.siteJson);
     this.siteJson.nav = nav;
-    nav.forEach(function(element){
-      let linkAttributes = [];
-      for (var [key, val] of Object.entries(element)) {
-        linkAttributes.push(self.editNavField(element.value + "_" + key, val, 'Update'));
-      }
-      // this should be moved into the builder
-      var label = document.createElement("label");
-      label.innerHTML = element.value;
-      divContent.append(label);
-      linkAttributes.forEach(function(attribute){
-        divContent.append(attribute);
+    if (nav.length > 0) {
+      nav.forEach(function(element){
+        let linkAttributes = [];
+        for (var [key, val] of Object.entries(element)) {
+          linkAttributes.push(self.editNavField(element.value + "_" + key, val, 'Update'));
+        }
+        // this should be moved into the builder
+        var label = document.createElement("label");
+        label.innerHTML = element.value;
+        divContent.append(label);
+        linkAttributes.forEach(function(attribute){
+          divContent.append(attribute);
+        });
       });
-    });
+    } else {
+      var divTextContent = document.createTextNode("Add a page to work with your navigation!");
+      divContent.append(divTextContent);
+    }
     document.getElementById("editorContentCol").innerHTML = '';
     document.getElementById("editorContentCol").append(divContent);
     //newWatcher (idToWatch=null, className=null, callback=null, watchedEvent='onclick', valueToPass=null, passedInCollection=null)
@@ -459,11 +478,11 @@ class Editor {
       "title": title,
       "context": title,
       "content": "",
-      "title": title + "_meta",
       "meta": {
         "status": "active",
         "visibility": "public",
-        "context": title + "_meta"
+        "context": title + "_meta",
+        "title": title + "_meta"
       }
     };
     if (this.siteJson.pages === undefined){

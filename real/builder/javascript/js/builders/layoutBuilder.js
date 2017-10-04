@@ -13,12 +13,22 @@ class LayoutBuilder {
   }
 
   output(json, page, options){
-    this.engine.outputHeader(json.header);
+    if (json.header) {
+      this.engine.outputHeader(json.header);
+    }
     this.engine.outputContentRow();
-    this.engine.outputNav(json.nav, 3);
-    this.engine.outputContent(json.pages, 9, page);
-    this.engine.outputSidebar(json.sidebar);
-    this.engine.outputFooter(json.footer);
+    if (json.nav) {
+      this.engine.outputNav(json.nav, 3);
+    }
+    if (json.pages) {
+      this.engine.outputContent(json.pages, 9, page);
+    }
+    if (json.sidebar) {
+      this.engine.outputSidebar(json.sidebar);
+    }
+    if (json.footer) {
+      this.engine.outputFooter(json.footer);
+    }
   }
 }
 export default LayoutBuilder;
