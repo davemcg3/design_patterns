@@ -1,9 +1,11 @@
 class Note
   @@id = 0
+  attr_reader :score, :description
 
-  def initialize(score_id=nil, description=nil)
+  def initialize(seed=nil)
     @@id += 1
-    @score_id = score_id
-    @description = description
+    @id = @@id
+    @score = seed[:score]
+    @description = seed[:description]
   end
 end

@@ -1,0 +1,322 @@
+[
+  {
+    "name": "Allagash White",
+    "vintage": "",
+    "style": {
+      "style": "witbier"
+    },
+    "abv": "5.10%",
+    "gravity": "",
+    "availability": "Year round",
+    "brewery": {
+      "name": "Allagash Brewing Company",
+      "city": "",
+      "state": "Maine",
+      "country": "United States",
+      "website": "allagash.com",
+      "beers": ["Allagash White"]
+    },
+    "score": {
+      "source_general": "beeradvocate.com",
+      "source_specific": "Aggregate",
+      "color": "",
+      "aroma": "",
+      "taste": "",
+      "palate": "",
+      "overall": "4.16/5"
+    },
+    "reviews": [
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "mklmcgrew",
+            "color": "4.5",
+            "aroma": "4",
+            "taste": "4.25",
+            "palate": "4",
+            "overall": "4"
+          },
+          "description": "On tap at Danny Coyles in San Francisco.\nL: Pours a cloudy yellow, with a fluffy white 2-finger head. Standard retention, but very nice lacing.\nA: The smell is a nice mixture of spice, yeast and wheat. Not overly strong, but it is consistent.\nT: Flavor follow the nose, with a complex mix of spice and citrus, with a touch of citrus zest. Good carbonation, but felt a little light in body. Overall dry finish.\nO: I don't typically go for witbiers, but this was pretty tasty. Maybe a little light in the body, but overall I can see me getting this in the future, especially if I want something light."
+        },
+        "author": "mklmcgrew"
+      },
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "DavidR",
+            "color": "5",
+            "aroma": "4.75",
+            "taste": "4.75",
+            "palate": "5",
+            "overall": "4.75"
+          },
+          "description": "Amazingly refreshing and delicious on tap. Drank out of the 16oz Allagash chalice. Looks beautifully yellow golden cloudy with huge lingering fluffly white head. Perfect balance between light belgian yeast esters and lemony, earthy, peppery, spicy, and other fruity flavors and aroma. Mouthfeel is flawless - great carbonation and body to the beer. This is great any time of the year but particularly fitting for a hot summer day."
+        },
+        "author": "DavidR"
+      }
+    ],
+    "ranking": {
+      "beer": "",
+      "rank": "1321"
+    },
+    "description": "Our interpretation of a traditional Belgian wheat beer. Brewed with a generous portion of wheat and spiced with coriander and Curacao orange peel, this beer is fruity, refreshing and slightly cloudy in appearance."
+  },
+  {
+    "name": "Blue Moon Belgian White",
+    "vintage": "",
+    "style": {
+      "style": "witbier"
+    },
+    "abv": "5.40%",
+    "gravity": "",
+    "availability": "Year round",
+    "brewery": {
+      "name": "Coors Brewing Company",
+      "city": "",
+      "state": "Colorado",
+      "country": "United States",
+      "website": "coors.com",
+      "beers": ["Blue Moon Belgian White"]
+    },
+    "score": {
+      "source_general": "beeradvocate.com",
+      "source_specific": "Aggregate",
+      "color": "",
+      "aroma": "",
+      "taste": "",
+      "palate": "",
+      "overall": "3.41/5"
+    },
+    "reviews": [
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "spectru",
+            "color": "3.75",
+            "aroma": "3.5",
+            "taste": "3.75",
+            "palate": "3.5",
+            "overall": "3.75"
+          },
+          "description": "Light golden hazy color with a nice white head that dissipates rapidly. Not a lot of aroma; a mild flavor with a hint of citrus. Kind of a smoothly odd mouth feel. Better tasting than a lot of other mainstream beers. I got my light-beer-drinking sister-in-law to enjoy Blue Moon - a step in the right direction."
+        },
+        "author": "spectru"
+      },
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "amyskip",
+            "color": "3.5",
+            "aroma": "4",
+            "taste": "3",
+            "palate": "3.5",
+            "overall": "3.25"
+          },
+          "description": "Citrus on the nose, strong wheat flavor."
+        },
+        "author": "amyskip"
+      }
+    ],
+    "ranking": {
+      "beer": "",
+      "rank": "41867"
+    },
+    "description": "Also know as Belgian Moon in Alberta & British Columbia"
+  },
+  {
+    "name": "Racer X Double IPA",
+    "vintage": "",
+    "style": {
+      "style": "American Double/Imperial IPA"
+    },
+    "abv": "8.30%",
+    "gravity": "",
+    "availability": "Winter",
+    "brewery": {
+      "name": "Bear Republic Brewing Co.",
+      "city": "",
+      "state": "California",
+      "country": "United States",
+      "website": "bearrepublic.com",
+      "beers": ["Racer X Double IPA", "Racer 5 India Pale Ale"]
+    },
+    "score": {
+      "source_general": "beeradvocate.com",
+      "source_specific": "Aggregate",
+      "color": "",
+      "aroma": "",
+      "taste": "",
+      "palate": "",
+      "overall": "4.22/5"
+    },
+    "reviews": [
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "hreb",
+            "color": "4",
+            "aroma": "3.75",
+            "taste": "3.75",
+            "palate": "3.75",
+            "overall": "3.75"
+          },
+          "description": "22oz bottle. Beer is mid amber in color and supports a very large white head atop loads of soda bubbles. Aroma is floral hops mixed with, oddly for this style, banana. The first tiny sip immediately tells me that this beast is loaded with old fashioned West coast IPA IBUs. No, I wouldn't say \"balance\" comes to mind immediately. But the more I drink it the more I'm enjoying the weight this leaves on my tongue. Even though it does lean towards the bitter side and the hop flavors are quite muddled by modern standards, this is still a good brew. Oldschool goodness."
+        },
+        "author": "hreb"
+      },
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "JohnnyHopps",
+            "color": "4.25",
+            "aroma": "4",
+            "taste": "4.25",
+            "palate": "4.5",
+            "overall": "4.25"
+          },
+          "description": "Appearance - The beer was copper in color with a white head.\nSmell - I noticed a fairly nondescript lemony hop knows.\nTaste - After a light lemon initial taste, I note sweet grapefruit and mandarin oranges. There is a sick sweet malty backbone. A little more bitterness comes through in the aftertaste. However, it is far from harsh.\nMouthfeel - Wow. There is some serious viscosity here it is a little like drinking a milkshake. I am amazed that carbonation is allowed to exist.\nOverall - The mouthfeel is the highlight on this one. The taste just does not seem to go far enough. I still like it a lot"
+        },
+        "author": "JohnnyHopps"
+      }
+    ],
+    "ranking": {
+      "beer": "",
+      "rank": "937"
+    },
+    "description": "Racer X is an uncommon Double India Pale Ale which puts a California twist on English brewing traditions by adding an assertive hop aroma and bitterness that compliments the firm malt backbone. Like its little brother Racer 5, Racer X is balance in a bottle.\n\n2009 California State Fair – BRONZE\n2009 San Diego International Beer Competition – 2nd\n2009 West Coast Beer Fest - GOLD"
+  },
+  {
+    "name": "Racer 5 India Pale Ale",
+    "vintage": "",
+    "style": {
+      "style": "American IPA"
+    },
+    "abv": "7.5%",
+    "gravity": "",
+    "availability": "Year round",
+    "brewery": {
+      "name": "Bear Republic Brewing Co.",
+      "city": "",
+      "state": "California",
+      "country": "United States",
+      "website": "bearrepublic.com",
+      "beers": ["Racer X Double IPA", "Racer 5 India Pale Ale"]
+    },
+    "score": {
+      "source_general": "beeradvocate.com",
+      "source_specific": "Aggregate",
+      "color": "",
+      "aroma": "",
+      "taste": "",
+      "palate": "",
+      "overall": "4.19/5"
+    },
+    "reviews": [
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "LeRose",
+            "color": "4.25",
+            "aroma": "4",
+            "taste": "4.25",
+            "palate": "4",
+            "overall": "4"
+          },
+          "description": "Pours a slightly hazy deep golden color with a generous white head that lasts and clings.\nGrapefruit dominates the aroma, but not offensively so - it is simply string and present until the end. Biscuit-like malt aromas are secondary but have a definite presence.\nThis is a full-flavored beer. There's enough malt to counterbalance the abundant grapefruit and there's a very refreshing minty/herbal component to the taste that brightens things up. There is just enough sweetness to keep the bitter tamed down, and a very slight biscuit contribution from the malt. Very round, complete taste.\nThe mouthfeel is smooth, moderate body, not thin at all. Carbonation appropriate to the sty.e\nOverall this is an enjoyable beer to drink. The flavor is full and fresh, nothing sticks out at the expense of any component in particular. This is simply a very good beer."
+        },
+        "author": "LeRose"
+      },
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "Kb024",
+            "color": "4",
+            "aroma": "3.75",
+            "taste": "4",
+            "palate": "4.25",
+            "overall": "4"
+          },
+          "description": "Looks: golden,a little hazy, orange, unfiltered\nSmell: It smells like a brewery, you can def smell the grain, Sweet smelling, a little honey, smells yeasty with a hint of belgian maybe. Some pine and green, a little citrus.\nTaste: fresh malt flavor, taste like an old school beer. Hint of belgian, Smooth, bready, hint of honey, not sweet, classic hop flavor, I recognize centennial and columbus. Well blanced. Green and earthy Without too much bitterness. 7.5% abv is hidden.\nFeel: smooth, medium body, looks heavier than it drinks. Definitely not light... Has a creamy feel, balanced.\nOverall: well executed. Seems like its almost a Dipa. Priced right, easily availible, 12 pks... Racer 5 is a winner."
+        },
+        "author": "Kb024"
+      }
+    ],
+    "ranking": {
+      "beer": "",
+      "rank": "1088"
+    },
+    "description": "This hoppy American IPA is a full bodied beer brewed with American pale and crystal malts, and heavily hopped with Chinook, Cascade, Columbus and Centennial. There's a trophy in every glass.\n\n2009 Great American Beer Festival® American-Style Strong Pale Ale – GOLD\n2009 Colorado State Fair – Best of Show\n2006 Great American Beer Festival®\nAmerican-Style Strong Pale Ale – SILVER\n2005 Great American Beer Festival® American-Style Strong Pale Ale – SILVER\n1999 Great American Beer Festival® India Pale Ale - GOLD"
+  },
+  {
+    "name": "Pliny the Elder",
+    "vintage": "",
+    "style": {
+      "style": "American Double/Imperial IPA"
+    },
+    "abv": "8.00%",
+    "gravity": "",
+    "availability": "Rotating",
+    "brewery": {
+      "name": "Russian River Brewing Company",
+      "city": "",
+      "state": "California",
+      "country": "United States",
+      "website": "rrbeer.com",
+      "beers": ["Pliny the Elder"]
+    },
+    "score": {
+      "source_general": "beeradvocate.com",
+      "source_specific": "Aggregate",
+      "color": "",
+      "aroma": "",
+      "taste": "",
+      "palate": "",
+      "overall": "4.65/5"
+    },
+    "reviews": [
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "Jeff_El_Jefe",
+            "color": "5",
+            "aroma": "5",
+            "taste": "4.75",
+            "palate": "5",
+            "overall": "5"
+          },
+          "description": "L - rich, golden color\nS - subtle fruits, pine\nT - very well balanced. i get mostly piney at first. then a little bit more citrusy later\nF - not too hoppy like many IPAs. medium bodied\nO - would not mind drinking this any chance I get. a bit tougher to find with all the hype that surrounds it. delicious IPA"
+        },
+        "author": "Jeff_El_Jefe"
+      },
+      {
+        "note": {
+          "score": {
+            "source_general": "beeradvocate.com",
+            "source_specific": "Holderness",
+            "color": "4.25",
+            "aroma": "4.5",
+            "taste": "4",
+            "palate": "4",
+            "overall": "4.25"
+          },
+          "description": "Bottled a month ago and tasted alongside a 5-week-old bottle of Blind Pig\n\nL -- Filtered orange body with a two-finger solid white head produced with moderately aerated pour. Good retention and great lacing. A little paler than Blind Pig, which was surprising. Bottle is like the Dr. Bronner's of beer\nS -- Grapefruit, new sneaker, pine, pineapple, grass, and a touch of booze. Not too in your face, but clean\nT -- Starts semi-sweet, with a pleasant honey sweetness and a wave of white peach and grapefruit hoppiness. This is abruptly followed by a robust, resinous bitterness that continues to the mildly astringent, herbaceous, black-tea-like finish. A hint of green coffee beans as well\nF -- Medium+ mouthfeel, medium carb. Booze is a little perceivable. Long-lasting finish\nO -- Glad to finally be trying this one. While it is definitely no longer king of the roost, it is beautifully put together given the date of its initial release.\n\n84/100"
+        },
+        "author": "Holderness"
+      }
+    ],
+    "ranking": {
+      "beer": "",
+      "rank": "16"
+    },
+    "description": "No notes at this time."
+  }
+]
