@@ -53,13 +53,13 @@ def getReviews(seed, scores, notes, reviews)
 
     # each note has: score, description
     # 2. build the notes
-    thisNote = Note.new({"score": thisScore, "description": review["note"]["description"]}) # keys get symbolized because ruby hash instead of JSON object
+    thisNote = Note.new({score: thisScore, description: review["note"]["description"]}) # keys get symbolized because ruby hash instead of JSON object
     notes << thisNote
     # p thisNote
 
     # 3. build the review
     # each review has: note, author
-    thisReview = Review.new({"note": thisNote, "author": review["author"]})
+    thisReview = Review.new({note: thisNote, author: review["author"]})
     reviews << thisReview
     # p thisReview
 
@@ -109,7 +109,7 @@ end
 def handleInput input, beers
   response = []
   # p input
-  splitInput = input.split(" ")
+  splitInput = input.split("" )
   # p splitInput
   splitInput.each do |searchTerm|
     beers.each do |beer|
