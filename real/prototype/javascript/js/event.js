@@ -19,6 +19,10 @@ function notifyListeners(e, object){
   //ObjectBase might need to have a method for receiving messages and then some way to act on received messages
 }
 
+// function render() {
+//   return 0;
+// }
+
 var type = "event";
 
 export { registerListener, triggerEvent, notifyListeners, type }

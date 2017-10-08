@@ -16,10 +16,10 @@ class Main {
     window.ProtoManage = ProtoManage;
 
     //I'm also going to use my registry as a spawner and an event handler
-    ProtoManage.registry = new ObjectBase([Register, Event], {'title': 'Object Registry' });
+    ProtoManage.registry = new ObjectBase([Register, Event], {'title': 'ProtoManage' });
 
     //Clone a board, column, and card off my spawner
-    ProtoManage.registry.addObject(ProtoManage.registry.clone(Board, {"title": "ProtoManage Board", "containedBy": null}));
+    ProtoManage.registry.addObject(ProtoManage.registry.clone(Board, {"title": "Default Board", "containedBy": ProtoManage.registry}));
     ProtoManage.registry.addObject(ProtoManage.registry.clone(Column, {"title": "Default List", "containedBy": ProtoManage.registry.find("type", "board")}));
     ProtoManage.registry.addObject(ProtoManage.registry.clone(Card, {"title": "Your First Card!","containedBy": ProtoManage.registry.find("type", "column")}));
 
@@ -32,6 +32,8 @@ class Main {
     ProtoManage.registry.contains.forEach(function(obj){
       console.log(obj);
     });
+
+    ProtoManage.registry.render();
 
   }
 }
