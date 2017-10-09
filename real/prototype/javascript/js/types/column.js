@@ -36,6 +36,18 @@ function typeRender(){
       column.append(row);
     }
 
+    //column.setAttribute('draggable', 'true');
+    if (!column.querySelector('.closeButton')){
+      var closeButton = document.createElement('button');
+      closeButton.setAttribute('class', 'pull-right btn-link closeButton');
+      closeButton.append(document.createTextNode('x'));
+      column.append(closeButton);
+      column.insertBefore(closeButton, column.firstChild);
+      closeButton.addEventListener('click', removeColumn, false);
+    }
+
+
+
     //add event listeners
     if (button){
       button.addEventListener('click', spawnCard, false);
@@ -51,21 +63,42 @@ function typeRender(){
   return 0;
 }
 
-function spawnCard(e){
-  //since the button is buried in a div inside a column inside... use recursion
-  function findParentColumn(node){
-    if (node.classList.contains('column')){
-      return node;
-    } else {
-      node = findParentColumn(node.parentNode);
-    }
+//since the button is buried in a div inside a column inside... use recursion
+function findParentNode(node, type){
+  if (node.classList.contains(type)){
     return node;
+  } else {
+    node = findParentNode(node.parentNode, type);
   }
+  return node;
+}
 
-  parent = findParentColumn(e.target);
-  window.ProtoManage.registry.addObject(ProtoManage.registry.clone(Card, {"title": "Test","containedBy": window.ProtoManage.registry.find("id", parseInt(parent.id))}));
+function spawnCard(e){
+  parent = findParentNode(e.target, "column");
+  window.ProtoManage.registry.addObject(ProtoManage.registry.clone(Card, {"title": "New card","containedBy": window.ProtoManage.registry.find("id", parseInt(parent.id))}));
   window.ProtoManage.registry.render();
 }
+
+
+function removeColumn(e){
+  var board = findParentNode(e.target, "board");
+  var column = findParentNode(e.target, "column");
+  //remove all cards from column (unnecessary since column is being deleted, but for completeness), registry, and DOM
+  window.ProtoManage.registry.find("id", parseInt(column.id)).contains.forEach(function(object){
+    //object should reach out and remove itself from its parent when being removed instead of having to remember to do it explicitly
+    window.ProtoManage.registry.find("id", parseInt(column.id)).removeObject(object);
+    window.ProtoManage.registry.removeObject(object);
+    document.getElementById(object.id).remove();
+  });
+  //remove column from board
+  window.ProtoManage.registry.find("id", parseInt(board.id)).removeObject(column);
+  //remove column from registry
+  window.ProtoManage.registry.removeObject(window.ProtoManage.registry.find("id", parseInt(column.id)));
+  //remove column from DOM
+  column.remove();
+}
+
+
 
 function handleDragStart(e) {
   e.stopPropagation();

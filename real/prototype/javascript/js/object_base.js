@@ -100,7 +100,7 @@ export default class ObjectBase {
       var column = document.createElement('div');
       column.setAttribute('class', 'col-xs-12');
       var title = document.createTextNode(this.title);
-      var titlep = document.createElement('p');
+      var titlep = document.createElement('span');
       titlep.append(title);
       var titlecol = document.createElement('div');
       titlecol.setAttribute('class', 'col-xs-12');

@@ -16,6 +16,7 @@ class Main {
     window.ProtoManage = ProtoManage;
 
     //I'm also going to use my registry as a spawner and an event handler
+    //TODO: registry, event, and board types should all enforce singleton pattern
     ProtoManage.registry = new ObjectBase([Register, Event], {'title': 'ProtoManage' });
 
     //Clone a board, column, and card off my spawner

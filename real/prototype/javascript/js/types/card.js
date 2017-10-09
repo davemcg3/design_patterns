@@ -29,7 +29,7 @@ function removeCard(e){
   var column = findParentNode(e.target, "column");
   var card = findParentNode(e.target, "card");
   //remove from column
-  window.ProtoManage.registry.find("id", parseInt(column.id)).removeObject(card);
+  window.ProtoManage.registry.find("id", parseInt(column.id)).removeObject(window.ProtoManage.registry.find("id", parseInt(card.id)));
   //remove from registry
   window.ProtoManage.registry.removeObject(window.ProtoManage.registry.find("id", parseInt(card.id)));
   //remove from DOM
