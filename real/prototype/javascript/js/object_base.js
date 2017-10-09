@@ -58,7 +58,7 @@ export default class ObjectBase {
   }
 
   removeObject (object) {
-    this.contains.pop(object);
+    this.contains = this.contains.filter(child => (child.id !== object.id))
   }
 
   find (attribute, value) {
@@ -99,7 +99,17 @@ export default class ObjectBase {
       row.setAttribute('class', 'row');
       var column = document.createElement('div');
       column.setAttribute('class', 'col-xs-12');
-      column.append(document.createTextNode(this.title));
+      var title = document.createTextNode(this.title);
+      var titlep = document.createElement('p');
+      titlep.append(title);
+      var titlecol = document.createElement('div');
+      titlecol.setAttribute('class', 'col-xs-12');
+      titlecol.append(titlep);
+      var titlerow = document.createElement('div');
+      titlerow.setAttribute('class', 'row');
+      titlerow.append(titlecol);
+      column.append(titlerow);
+      titlecol.addEventListener('click', this.handleTitleClick, false);
       row.append(column);
       element.append(row);
 
@@ -121,7 +131,7 @@ export default class ObjectBase {
         }
       }
     } else {
-      console.log('document already contains this element: ' + this.id);
+      // console.log('document already contains this element: ' + this.id);
     }
 
     if (this.typeRender){
@@ -129,6 +139,57 @@ export default class ObjectBase {
     }
 
     return 0;
+  }
+
+  handleTitleClick(e){
+    function findParentNode(node, type='id', value=null){ //can probably extend with type and value variables to allow searching up the tree for anything, need to handle case where no parents left
+      if (node === null) return false;
+      if (node[type]){
+        if (value){
+          if (node[type] === value || node[type].contains(value)){
+            return node;
+          }
+        } else {
+          if (node[type]){
+            return node;
+          }
+        }
+        node = findParentNode(node.parentNode, type, value);
+      } else {
+        node = findParentNode(node.parentNode, type, value);
+      }
+      return node;
+    }
+
+    //app title shouldn't be editable, registry doesn't contain a copy of itself so it won't be found
+    if (window.ProtoManage.registry.find("id", parseInt(findParentNode(e.target).id))) {
+      var card = findParentNode(e.target, 'classList', 'card');
+      if (card) {
+        card.setAttribute('draggable', false);
+      }
+      var input = document.createElement('input');
+      input.value = e.target.innerHTML;
+      input.setAttribute('class', 'col-xs-12');
+      input.addEventListener('blur', function(e){
+        //set title in our app
+        window.ProtoManage.registry.find("id", parseInt(findParentNode(e.target).id)).setTitle(e.target.value);
+
+        //adjust ui
+        var title = document.createTextNode(e.target.value);
+        var p = e.target.parentNode;
+        p.innerHTML = '';
+        p.append(title);
+
+        var card = findParentNode(p, 'classList', 'card');
+        console.log(card);
+        if (card) {
+          card.setAttribute('draggable', true);
+        }
+      });
+      e.target.innerHTML = '';
+      e.target.append(input);
+      input.focus();
+    }
   }
 
   //Prototype Pattern

@@ -1,3 +1,6 @@
+//for spawning new cards
+import * as Card from '/js/types/card.js'
+
 //when a card is added we want an event to trigger
 function addObject(object){
   window.ProtoManage.registry.triggerEvent('before_add', this, object);
@@ -8,56 +11,60 @@ function addObject(object){
 //when a card is removed we want an event to trigger
 function removeObject(object){
   window.ProtoManage.registry.triggerEvent('before_remove', this, object);
-  this.contains.pop(object);
+  this.contains = this.contains.filter(child => (child.id !== object.id))
   window.ProtoManage.registry.triggerEvent('after_remove', this, object);
 }
 
 function typeRender(){
-  // var element = null;
-  // if (!(element = document.getElementById(this.id))) {
-  //   console.log('if succeeded');
-  //   //create element if it doesn't exist
-  //   element = document.createElement('div');
-  //   element.setAttribute('id', this.id);
-  //   element.setAttribute('class', this.type.join(' ') + ' col-md-2');
-  //   var row = document.createElement('div');
-  //   row.setAttribute('class', 'row');
-  //   var column = document.createElement('div');
-  //   column.setAttribute('class', 'col-xs-12');
-  //   column.append(document.createTextNode(this.title));
-  //   row.append(column);
-  //   element.append(row);
-  //   console.log(element);
-  //
-  //   var parent = null;
-  //   if (this.containedBy !== null) {
-  //     parent = document.getElementById(this.containedBy.id);
-  //   } else {
-  //     parent = document.getElementsByTagName('body');
-  //     parent = parent[0];
-  //   }
-  //   //parent.innerHTML = '';
-  //   console.log(parent);
-  //   parent.append(element);
-  // } else {
-  //   console.log('if failed');
-  // }
-  //
-  var columns = window.ProtoManage.registry.contains.filter(child => (child.type.includes('column')));
-  columns.forEach(function(element){
-    //only do this if the object has been rendered
-    var column = document.getElementById(element.id);
-    if (column){
-      column.classList.add('col-md-2');
-      column.addEventListener('dragstart', handleDragStart, false);
-      column.addEventListener('dragover', handleDragOver, false);
-      column.addEventListener('dragenter', handleDragEnter, false);
-      column.addEventListener('dragleave', handleDragLeave, false);
-      column.addEventListener('dragend', handleDragEnd, false);
-      column.addEventListener('drop', handleDrop, false);
+  //only do this if the object has been rendered
+  var column = document.getElementById(this.id);
+  if (column){
+    //columnize our column
+    column.classList.add('col-md-2');
+
+    //add our spawner if needed
+    if (!column.querySelector('.cardSpawner')){
+      var row = document.createElement('div');
+      row.setAttribute('class', 'row');
+      var spawner = document.createElement('div');
+      spawner.setAttribute('class', 'col-xs-12 cardSpawner');
+      var button = document.createElement('button');
+      button.setAttribute('class', 'btn btn-success col-xs-12');
+      button.append(document.createTextNode('Add Card'));
+      spawner.append(button);
+      row.append(spawner);
+      column.append(row);
     }
-  });
+
+    //add event listeners
+    if (button){
+      button.addEventListener('click', spawnCard, false);
+    }
+    column.addEventListener('dragstart', handleDragStart, false);
+    column.addEventListener('dragover', handleDragOver, false);
+    column.addEventListener('dragenter', handleDragEnter, false);
+    column.addEventListener('dragleave', handleDragLeave, false);
+    column.addEventListener('dragend', handleDragEnd, false);
+    column.addEventListener('drop', handleDrop, false);
+  }
+
   return 0;
+}
+
+function spawnCard(e){
+  //since the button is buried in a div inside a column inside... use recursion
+  function findParentColumn(node){
+    if (node.classList.contains('column')){
+      return node;
+    } else {
+      node = findParentColumn(node.parentNode);
+    }
+    return node;
+  }
+
+  parent = findParentColumn(e.target);
+  window.ProtoManage.registry.addObject(ProtoManage.registry.clone(Card, {"title": "Test","containedBy": window.ProtoManage.registry.find("id", parseInt(parent.id))}));
+  window.ProtoManage.registry.render();
 }
 
 function handleDragStart(e) {
@@ -67,7 +74,7 @@ function handleDragStart(e) {
   dragSrcEl = this;
 
  e.dataTransfer.effectAllowed = 'move';
- e.dataTransfer.setData('text/html', this.innerHTML);
+ e.dataTransfer.setData('text/html', e.target.outerHTML);
 }
 
 function handleDragOver(e) {
@@ -112,8 +119,8 @@ function handleDrop(e) {
     var s = e.dataTransfer.getData('text/html');
     var temp = document.createElement('div');
     temp.innerHTML = s;
-    temp = temp.getElementsByClassName('card')[0];
-    var transferredCard = document.getElementById(temp.id);
+    temp = temp.getElementsByClassName('card')[0]; //this card is not part of the DOM
+    var transferredCard = document.getElementById(temp.id); //this is the card from the DOM that we are transferring
     if (transferredCard.getAttribute('id')){
       //move it in our actual application
       window.ProtoManage.registry.move(window.ProtoManage.registry.find("id", parseInt(transferredCard.getAttribute('id'))), window.ProtoManage.registry.find("id", parseInt(this.id)));
@@ -124,10 +131,6 @@ function handleDrop(e) {
       //add to new column
       document.getElementById(this.id).append(transferredCard);
     }
-
-    // console.log(e.dataTransfer.getData('text/html'));
-    //this.innerHTML = e.dataTransfer.getData('text/html');
-
   }
 
   return false;
