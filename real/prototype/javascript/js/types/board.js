@@ -8,16 +8,16 @@ function typeRender(){
     //add our spawner if needed
     if (!element.querySelector('.columnSpawner')){
       var row = document.createElement('div');
-      //row.setAttribute('class', 'row');
+      row.setAttribute('class', 'row');
       var spawner = document.createElement('div');
-      spawner.setAttribute('class', 'columnSpawner pull-left');
+      spawner.setAttribute('class', 'col-xs-12 columnSpawner');
       var button = document.createElement('button');
       button.setAttribute('class', 'btn btn-success');
       button.append(document.createTextNode('Add Column'));
       button.addEventListener('click', spawnColumn, false);
       spawner.append(button);
-      //row.append(spawner);
-      element.append(spawner);
+      row.append(spawner);
+      element.append(row);
     }
   }
 

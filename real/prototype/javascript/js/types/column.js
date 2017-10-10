@@ -19,6 +19,7 @@ function typeRender(){
   //only do this if the object has been rendered
   var column = document.getElementById(this.id);
   if (column){
+
     //columnize our column
     column.classList.add('col-md-2');
 
@@ -102,7 +103,7 @@ function removeColumn(e){
 
 function handleDragStart(e) {
   e.stopPropagation();
-  //this.style.opacity = '0.4';  // this / e.target is the source node.
+  e.target.style.opacity = '0.4';  // this / e.target is the source node.
 
   dragSrcEl = this;
 
@@ -130,7 +131,8 @@ function handleDragLeave(e) {
 }
 
 function handleDragEnd(e) {
-  //this.style.opacity = '1.0';  // this / e.target is the source node.
+  e.target.style.opacity = '1.0';  // this / e.target is the source node.
+  this.classList.remove('over');  // this / e.target is previous target element.
 }
 
 
