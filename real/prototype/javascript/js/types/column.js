@@ -37,7 +37,7 @@ function typeRender(){
       column.append(row);
     }
 
-    //column.setAttribute('draggable', 'true');
+    // column.setAttribute('draggable', 'true');
     if (!column.querySelector('.closeButton')){
       var closeButton = document.createElement('button');
       closeButton.setAttribute('class', 'pull-right btn-link closeButton');
@@ -53,12 +53,12 @@ function typeRender(){
     if (button){
       button.addEventListener('click', spawnCard, false);
     }
-    column.addEventListener('dragstart', handleDragStart, false);
-    column.addEventListener('dragover', handleDragOver, false);
-    column.addEventListener('dragenter', handleDragEnter, false);
-    column.addEventListener('dragleave', handleDragLeave, false);
-    column.addEventListener('dragend', handleDragEnd, false);
-    column.addEventListener('drop', handleDrop, false);
+    // column.addEventListener('dragstart', this.handleDragStart, false);
+    column.addEventListener('dragover', this.handleDragOver, false);
+    // column.addEventListener('dragenter', this.handleDragEnter, false);
+    // column.addEventListener('dragleave', this.handleDragLeave, false);
+    // column.addEventListener('dragend', this.handleDragEnd, false);
+    column.addEventListener('drop', this.handleDrop, false);
   }
 
   return 0;
@@ -101,78 +101,78 @@ function removeColumn(e){
 
 
 
-function handleDragStart(e) {
-  e.stopPropagation();
-  e.target.style.opacity = '0.4';  // this / e.target is the source node.
-
-  dragSrcEl = this;
-
- e.dataTransfer.effectAllowed = 'move';
- e.dataTransfer.setData('text/html', e.target.outerHTML);
-}
-
-function handleDragOver(e) {
-  if (e.preventDefault) {
-    e.preventDefault(); // Necessary. Allows us to drop.
-  }
-
-  e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
-  return false;
-}
-
-function handleDragEnter(e) {
-  // this / e.target is the current hover target.
-  this.classList.add('over');
-}
-
-function handleDragLeave(e) {
-  this.classList.remove('over');  // this / e.target is previous target element.
-}
-
-function handleDragEnd(e) {
-  e.target.style.opacity = '1.0';  // this / e.target is the source node.
-  this.classList.remove('over');  // this / e.target is previous target element.
-}
-
-
-function handleDrop(e) {
-  // this / e.target is current target element.
-
-  if (e.stopPropagation) {
-    e.stopPropagation(); // stops the browser from redirecting.
-  }
-
-  // Don't do anything if dropping the same column we're dragging.
-  // Not 100% sure this is set correctly because we're on a different column object, but it seemed to work during some light testing
-  if (dragSrcEl != this) {
-    // Set the source column's HTML to the HTML of the column we dropped on.
-    //dragSrcEl.innerHTML = this.innerHTML;
-
-
-    //dirty hack to get at the id of the transferred object
-    var s = e.dataTransfer.getData('text/html');
-    var temp = document.createElement('div');
-    temp.innerHTML = s;
-    temp = temp.getElementsByClassName('card')[0]; //this card is not part of the DOM
-    var transferredCard = document.getElementById(temp.id); //this is the card from the DOM that we are transferring
-    if (transferredCard.getAttribute('id')){
-      //move it in our actual application
-      window.ProtoManage.registry.move(window.ProtoManage.registry.find("id", parseInt(transferredCard.getAttribute('id'))), window.ProtoManage.registry.find("id", parseInt(this.id)));
-
-      //adjust visuals to match what we just did
-      //remove from old column
-      transferredCard.remove();
-      //add to new column
-      document.getElementById(this.id).append(transferredCard);
-    }
-  }
-
-  return false;
-}
-
-var dragSrcEl = null;
-
+// function handleDragStart(e) {
+//   e.stopPropagation();
+//   e.target.style.opacity = '0.4';  // this / e.target is the source node.
+//
+//   dragSrcEl = this;
+//
+//  e.dataTransfer.effectAllowed = 'move';
+//  e.dataTransfer.setData('text/html', e.target.outerHTML);
+// }
+//
+// function handleDragOver(e) {
+//   if (e.preventDefault) {
+//     e.preventDefault(); // Necessary. Allows us to drop.
+//   }
+//
+//   e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+//
+//   return false;
+// }
+//
+// function handleDragEnter(e) {
+//   // this / e.target is the current hover target.
+//   this.classList.add('over');
+// }
+//
+// function handleDragLeave(e) {
+//   this.classList.remove('over');  // this / e.target is previous target element.
+// }
+//
+// function handleDragEnd(e) {
+//   e.target.style.opacity = '1.0';  // this / e.target is the source node.
+//   this.classList.remove('over');  // this / e.target is previous target element.
+// }
+//
+//
+// function handleDrop(e) {
+//   // this / e.target is current target element.
+//
+//   if (e.stopPropagation) {
+//     e.stopPropagation(); // stops the browser from redirecting.
+//   }
+//
+//   // Don't do anything if dropping the same column we're dragging.
+//   // Not 100% sure this is set correctly because we're on a different column object, but it seemed to work during some light testing
+//   if (dragSrcEl != this) {
+//     // Set the source column's HTML to the HTML of the column we dropped on.
+//     //dragSrcEl.innerHTML = this.innerHTML;
+//
+//
+//     //dirty hack to get at the id of the transferred object
+//     var s = e.dataTransfer.getData('text/html');
+//     var temp = document.createElement('div');
+//     temp.innerHTML = s;
+//     temp = temp.getElementsByClassName('card')[0]; //this card is not part of the DOM
+//     var transferredCard = document.getElementById(temp.id); //this is the card from the DOM that we are transferring
+//     if (transferredCard.getAttribute('id')){
+//       //move it in our actual application
+//       window.ProtoManage.registry.move(window.ProtoManage.registry.find("id", parseInt(transferredCard.getAttribute('id'))), window.ProtoManage.registry.find("id", parseInt(this.id)));
+//
+//       //adjust visuals to match what we just did
+//       //remove from old column
+//       transferredCard.remove();
+//       //add to new column
+//       document.getElementById(this.id).append(transferredCard);
+//     }
+//   }
+//
+//   return false;
+// }
+//
+// var dragSrcEl = null;
+//
 var type = "column";
 
 export { addObject, removeObject, typeRender, type }

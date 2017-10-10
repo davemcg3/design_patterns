@@ -21,6 +21,14 @@ function typeRender(){
     }
   }
 
+  //element.addEventListener('dragstart', this.handleDragStart, false);
+  // element.addEventListener('dragover', this.handleDragOver, false);
+  // column.addEventListener('dragenter', this.handleDragEnter, false);
+  // column.addEventListener('dragleave', this.handleDragLeave, false);
+  // column.addEventListener('dragend', this.handleDragEnd, false);
+  // element.addEventListener('drop', this.handleDrop, false);
+
+
   return 0;
 }
 
