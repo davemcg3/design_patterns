@@ -10,7 +10,10 @@
   height: 95%;
 }
 
-.column {
+.ghostColumn {
+  opacity: 0.5;
+}
+.column, .ghostColumn {
   background-color: #999;
   /*padding: 2em;*/
   padding-top: 0.5em;
@@ -24,13 +27,12 @@
 }
 
 .card {
-  background-color: #ddd;
 }
 .ghostCard {
-  background-color: #ddd;
   opacity: 0.5;
 }
 .card, .ghostCard {
+  background-color: #ddd;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   margin-bottom: 0.5em;

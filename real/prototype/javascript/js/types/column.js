@@ -37,7 +37,7 @@ function typeRender(){
       column.append(row);
     }
 
-    // column.setAttribute('draggable', 'true');
+    column.setAttribute('draggable', 'true');
     if (!column.querySelector('.closeButton')){
       var closeButton = document.createElement('button');
       closeButton.setAttribute('class', 'pull-right btn-link closeButton');
@@ -53,11 +53,11 @@ function typeRender(){
     if (button){
       button.addEventListener('click', spawnCard, false);
     }
-    // column.addEventListener('dragstart', this.handleDragStart, false);
+    column.addEventListener('dragstart', this.handleDragStart, false);
     column.addEventListener('dragover', this.handleDragOver, false);
-    // column.addEventListener('dragenter', this.handleDragEnter, false);
-    // column.addEventListener('dragleave', this.handleDragLeave, false);
-    // column.addEventListener('dragend', this.handleDragEnd, false);
+    column.addEventListener('dragenter', this.handleDragEnter, false);
+    column.addEventListener('dragleave', this.handleDragLeave, false);
+    column.addEventListener('dragend', this.handleDragEnd, false);
     column.addEventListener('drop', this.handleDrop, false);
   }
 

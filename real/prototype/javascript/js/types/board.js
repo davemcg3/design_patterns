@@ -21,12 +21,12 @@ function typeRender(){
     }
   }
 
-  //element.addEventListener('dragstart', this.handleDragStart, false);
-  // element.addEventListener('dragover', this.handleDragOver, false);
-  // column.addEventListener('dragenter', this.handleDragEnter, false);
-  // column.addEventListener('dragleave', this.handleDragLeave, false);
-  // column.addEventListener('dragend', this.handleDragEnd, false);
-  // element.addEventListener('drop', this.handleDrop, false);
+  element.addEventListener('dragstart', this.handleDragStart, false);
+  element.addEventListener('dragover', this.handleDragOver, false);
+  element.addEventListener('dragenter', this.handleDragEnter, false);
+  element.addEventListener('dragleave', this.handleDragLeave, false);
+  element.addEventListener('dragend', this.handleDragEnd, false);
+  element.addEventListener('drop', this.handleDrop, false);
 
 
   return 0;
@@ -45,7 +45,8 @@ function findParentNode(node, type){
 function spawnColumn(e){
   parent = findParentNode(e.target, "board");
   window.ProtoManage.registry.addObject(ProtoManage.registry.clone(Column, {"title": "New column","containedBy": window.ProtoManage.registry.find("id", parseInt(parent.id))}));
-  window.ProtoManage.registry.render();
+  //window.ProtoManage.registry.render();
+  window.ProtoManage.registry.find("id", parseInt(parent.id)).render();
 }
 
 var type = "board";

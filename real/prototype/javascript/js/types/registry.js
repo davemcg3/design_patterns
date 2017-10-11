@@ -1,4 +1,8 @@
 function move(object, target){
+  console.log('registry move');
+  console.log(object);
+  console.log(target);
+  console.log(window.ProtoManage.registry.find("id", object.id).containedBy);
   window.ProtoManage.registry.find("id", object.id).containedBy.removeObject(object);
   target.addObject(object);
   object.containedBy = target;
