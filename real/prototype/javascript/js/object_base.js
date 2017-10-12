@@ -395,7 +395,7 @@ export default class ObjectBase {
   }
 
   handleDragEnd(e) {
-    e.target.style.opacity = '1.0';  // this / e.target is the source node.
+    // e.target.style.opacity = '1.0';  // this / e.target is the source node.
     this.classList.remove('over');  // this / e.target is previous target element.
     [".ghostCard", ".ghostColumn"].forEach(function(ghostC){
       var ghost = document.querySelector(ghostC);
@@ -424,7 +424,6 @@ export default class ObjectBase {
       this.dragSrcEl.style.display = 'block';
     }
   }
-
 
   handleDrop(e) {
     // this / e.target is current target element.
