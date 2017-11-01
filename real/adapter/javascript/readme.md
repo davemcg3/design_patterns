@@ -1,5 +1,7 @@
 # Adapter Pattern
 
+This is an example of an object adapter where the adapter instantiates and calls methods on the adaptees, in this case the AbstractAdapter instantiates and calls methods on the FacebookAdapter, InstagramAdapter, and TwitterAdapter (which are all 3 Adaptees in design pattern parlance).
+
 ## Setup
 * `npm init`
 * `npm i webpack -S`
