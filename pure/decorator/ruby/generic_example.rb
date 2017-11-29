@@ -6,61 +6,53 @@ end
 
 class ConcreteComponent < AbstractComponent
   def operation
-    print name, " is executing operation\n"
-  end
-
-  def name
-    "component"
+    print "Component is executing operation\n"
   end
 end
 
-class Decorator
-  def initialize component
-    @decoratedComponent = component
-  end
-
-  def operation
-    @decoratedComponent.operation
+module ConcreteDecoratorA
+  def addedState
+    true
   end
 end
 
-class ConcreteDecoratorA < AbstractDecorator
-  attr_accessor :addedState
-
-  def initialize component
-    super component
-    @addedState = true
-  end
-
-  def name
-    component.name + "A"
-  end
-end
-
-class ConcreteDecoratorB < AbstractDecorator
+module ConcreteDecoratorB
   def addedBehavior
-    print "Added behavior executing\n"
+    print "Component has an added behavior\n"
   end
+end
 
-  def name
-    component.name + "B"
+def output component
+  component.operation
+  begin
+    component.addedState
+    print "Component has an added state\n"
+  rescue
+    print "Component does not have added state\n"
+  end
+  begin
+    component.addedBehavior
+  rescue
+    print "Component does not have added behavior\n"
   end
 end
 
 def run
+  print "***Raw Component***\n"
   component = ConcreteComponent.new
-  component.operation
+  output component
 
-  componentA = ConcreteDecoratorA.new component
-  componentA.operation
-  p componentA.inspect
-  print "Does our decorated component A have an added state? #{componentA.addedState ? "yes" : "no"}\n"
+  print "***Component decorated with A***\n"
+  class << component
+    include ConcreteDecoratorA
+  end
+  output component
 
-  componentAB = ConcreteDecoratorB.new componentA
-  componentAB.operation
-  p componentAB.inspect
-  print "Does our decorated component AB have an added state? #{componentAB.addedState ? "yes" : "no"}\n"
-  componentAB.addedBehavior
+  print "***Component decorated with A and B***\n"
+  class << component
+    include ConcreteDecoratorB
+  end
+  output component
 end
 
 run
