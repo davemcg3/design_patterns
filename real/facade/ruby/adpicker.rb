@@ -76,29 +76,35 @@ end
 
 class AdDisplayer
   def initialize debug = 0
-    @debug = debug
+    @@debug = debug
+  end
+
+  def self.debug
+    @@debug ||= 0
   end
 
   def display(network)
-    begin
+    self.class.display network
+  end
+
+  def self.display(network)
+    p "network: (#{network.class}) " + network.to_s if debug > 0
+    if network.class == String
       Object::const_get(network + 'Ad').new.display
-    rescue => e
-      if @debug > 0
-        e
-      else
-        "Ad-free experience"
-      end
+    else
+      network.display
     end
+  rescue => e
+    if debug > 0
+      p e
+    end
+    "Ad-free experience"
   end
 end
 
 ###############################################################################
 
 class AbstractAdRotationStrategy
-  def initialize (count = nil)
-    @count = count unless count.nil?
-  end
-
   def decide
     raise "Not Implemented"
   end
@@ -106,17 +112,16 @@ end
 
 class DecisionMethodTimeRandom < AbstractAdRotationStrategy
   def decide
-    (Time.now.sec % 4)
+    (Time.now.sec % AbstractAd.networkCount)
   end
 end
 
 class DecisonMethodRoundRobin < AbstractAdRotationStrategy
   def decide
-    raise "Unknown network count" if @count.nil? # would need better error checking for a production app
-    # would need to slam this into something like redis on a website so it was available on new requests
+    # would need to slam @last into something like redis on a website so it was available on new requests
     @last = @last || -1 # initialize
     @last = @last + 1 # increment
-    @last % @count # return
+    @last % AbstractAd.networkCount # return
   end
 end
 
@@ -130,22 +135,18 @@ class AdNetworkRegistry
   end
 
   def setStrategy (rotationStrategy = "round robin", adfree = false)
-    case rotationStrategy
-      when "randomized"
-        # networks are lazy-loaded
-        @rotationStrategy = DecisionMethodTimeRandom.new
-      else
-        networks = ['Google', 'Facebook', 'Amazon']
-        networks << "Abstract" if adfree # need something to instantiate so can't use "booga booga" here
-        # need the network count to instantiate the decision strategy so eager load networks
-        networks.each do |network|
-          Object::const_get(network + 'Ad').new
-        end
-        @rotationStrategy = DecisonMethodRoundRobin.new self.count
+    networks = ['Google', 'Facebook', 'Amazon']
+    networks << "Abstract" if adfree
+    # need the network count for the mod in the decision strategy so eager load networks
+    networks.each do |network|
+      Object::const_get(network + 'Ad').new.reset_displayed
     end
 
-    self.networks.each do |network|
-      network.reset_displayed
+    case rotationStrategy
+      when "randomized"
+        @rotationStrategy = DecisionMethodTimeRandom.new
+      else
+        @rotationStrategy = DecisonMethodRoundRobin.new
     end
   end
 
@@ -167,6 +168,10 @@ class AdNetworkRegistry
   end
 
   def getAd
+    getAdV4
+  end
+
+  def getAdV1
     adDisplayer = AdDisplayer.new
     adContent = case @rotationStrategy.decide
       when 0
@@ -178,10 +183,25 @@ class AdNetworkRegistry
       else
         # this is obviously a sub-par way to handle the else case, but I wanted to show that you can pass anything to the
         # AdDisplayer and it can handle the input sensibly
-        adDisplayer.display('booga booga')
+        # adDisplayer.display('booga booga') # this works but doesn't count the ad-free experiences
+        adDisplayer.display('Abstract')
     end
 
     adContent
+  end
+
+  def getAdV2
+    adDisplayer = AdDisplayer.new
+    adDisplayer.display(['Google', 'Facebook', 'Amazon', 'Abstract'][@rotationStrategy.decide])
+  end
+
+  def getAdV3
+    adDisplayer = AdDisplayer.new
+    adDisplayer.display(AbstractAd.networks[@rotationStrategy.decide])
+  end
+
+  def getAdV4
+    AdDisplayer.display(AbstractAd.networks[@rotationStrategy.decide])
   end
 end
 
@@ -202,12 +222,13 @@ end
 def run
   testCases = 30
 
+  # simple default interface
   registry = AdNetworkRegistry.new
   simulateAdsBeingShown registry, testCases
 
+  # expose low-level implementation details to those that need them
   registry.setStrategy "randomized", true
   simulateAdsBeingShown registry, testCases
-
 end
 
 run
