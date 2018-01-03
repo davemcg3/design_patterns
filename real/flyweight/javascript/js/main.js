@@ -2,6 +2,7 @@
 
 import Registry from '/js/registry/registry.js';
 import Board from '/js/board/board.js';
+import Porthole from '/js/porthole/porthole.js';
 
 (function main() {
   //namespace
@@ -9,8 +10,10 @@ import Board from '/js/board/board.js';
 
   window.game.registry = new Registry();
 
-  window.game.board = new Board(window.game.registry);
+  window.game.board = new Board(window.game.registry, 4, 3);
   window.game.board.draw();
+
+  window.game.porthole = new Porthole(window.game.registry, window.game.board);
 
   console.log(window.game);
 })();
