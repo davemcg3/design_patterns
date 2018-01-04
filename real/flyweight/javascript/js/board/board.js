@@ -58,8 +58,11 @@ class Board {
       // 12. continue until out of continent tiles
 
     let tilesLeft = tilesPerContinent - 1; // our seed tile
-    let directions = [for (i of Array(9).keys()) i+1];
+    //let directions = [for (i of Array(9).keys()) i+1];
+    let directions = [];
+    for (let i of Array(9).keys()) { directions.push(i + 1) };
     directions = directions.filter(e => e !== 5);
+    console.log(directions);
     console.log(directions);
 
     do {
@@ -133,7 +136,10 @@ class Board {
     this.tiles[seed2y][seed2x] = new Tile ({ "id": seed2y + ":" + seed2x, "terrain":registry.getRegisteredItem('terrains', 'grassland')});
 
     tilesLeft = tilesPerContinent - 1; // our seed tile
-    directions = [for (i of Array(9).keys()) i+1];
+    //directions = [for (i of Array(9).keys()) i+1];
+    directions = [];
+    for (let i of Array(9).keys()) { directions.push(i + 1) };
+    console.log(directions);
     directions = directions.filter(e => e !== 5);
     console.log(directions);
 
