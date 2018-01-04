@@ -10,7 +10,7 @@ import Porthole from '/js/porthole/porthole.js';
 
   window.game.registry = new Registry();
 
-  window.game.board = new Board(window.game.registry, 20, 7);
+  window.game.board = new Board(window.game.registry, 20, 10);
   window.game.board.draw();
 
   window.game.porthole = new Porthole(window.game.registry, window.game.board);
