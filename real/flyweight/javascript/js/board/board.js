@@ -36,6 +36,7 @@ class Board {
     //will eventually need a better way to pick seed locations but for now let's go upper-right and lower-left
     //upper-right
     // TODO: Properly fix bug with 0-indexed arrays being out of bounds. For example, height 3 75% tile rounded up is tile 3, but row count only goes up to 2
+    // TODO: Randomize seed location within a bounded range
     let seed1x = Math.floor(this.width * 75 / 100);
     let seed1y = Math.floor(this.height * 25 / 100);
     console.log('seed 1: ' + seed1x + ', ' + seed1y);
@@ -118,6 +119,7 @@ class Board {
 
 
 
+    // TODO: Randomize seed location within a bounded range
     let seed2x = Math.floor(this.width * 25 / 100);
     let seed2y = Math.floor(this.height * 75 / 100);
     console.log('seed 2: ' + seed2x + ', ' + seed2y);
@@ -196,12 +198,21 @@ class Board {
     //
     // } while (directions.length > 0);
 
+    //TODO:figure out island seeding
+    //algorithm might look like:
+      //generate array of placeholder tiles
+      //pick tile not in array of picked tiles (randomly-ish?)
+      //add tile coordinates to array of picked tiles
+      //if placeholder, check surrounding tiles
+      //if surrounding are placeholders generate island
+        //maybe check surrounding tiles of surrounding tiles and add another tile for a larger island
+      //if more islands and tiles left to pick from, begin again
 
     //fill in our water tiles
     console.log('filling in water tiles');
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
-        console.log(this.tiles[i][j]);
+        // console.log(this.tiles[i][j]);
         if (this.tiles[i][j] == 'placeholder') {
           this.tiles[i][j] = new Tile ({ "id": j + ":" + i, "terrain":registry.getRegisteredItem('terrains', 'ocean')});
         }
@@ -221,7 +232,7 @@ class Board {
   }
 
   buildContinent(seedx, seedy, tilesLeft) {
-    console.log('build continent starting at ' + seedx + ', ' + seedy + ', ' + tilesLeft + ' tiles left');
+    // console.log('build continent starting at ' + seedx + ', ' + seedy + ', ' + tilesLeft + ' tiles left');
     //TODO: this is our recursive function
     //probably will look something like this:
       // 0. add a tile where we are if it doesn't have one
@@ -240,54 +251,59 @@ class Board {
 
       // 0. add a tile where we are if it doesn't have one
       try {
-        if (this.tiles[seedy][seedx].terrains.name) {} //noop
+        if (this.tiles[seedy][seedx].terrain.name) {
+          // console.log(this.tiles[seedy][seedx].terrains.name + ' tile exists at ' + seedx + ', ' + seedy + ', noop');
+        } //noop
       } catch (e) {
+        // console.log(e);
         this.tiles[seedy][seedx] = new Tile ({ "id": seedx + ":" + seedy, "terrain":this.registry.getRegisteredItem('terrains', 'grassland')});
         tilesLeft--;
-        console.log('added new seed tile, ' + tilesLeft + ' tiles left');
+        // console.log('added new seed tile, ' + tilesLeft + ' tiles left');
       }
 
       // 1-2
       let directions = this.getPossibleDirections(seedx,seedy);
 
       // 3-6
-      console.log('about to fill tiles around seed');
+      // console.log('about to fill tiles around seed');
       tilesLeft = this.fillNewTile(seedx, seedy, tilesLeft, directions);
-      console.log('finished filling tiles around seed, ' + tilesLeft + ' tiles left');
+      // console.log('finished filling tiles around seed, ' + tilesLeft + ' tiles left');
 
       let seeds = [{x:seedx, y:seedy}];
-      console.log('seeds:');
-      console.log(seeds);
+      // console.log('seeds:');
+      // console.log(seeds);
       let newSeed = seeds[0];
-      console.log('newSeed:');
-      console.log(newSeed);
+      // console.log('newSeed:');
+      // console.log(newSeed);
 
       do {
         // 7. go back to the seed, pick a direction, and use that as the new seed
         directions = [];
         for (let i of Array(9).keys()) { directions.push(i + 1) };
         directions = directions.filter(e => e != 5);
-        console.log('build continent do loop directions:');
-        console.log(directions);
-        let direction = directions[Math.floor(Math.random()*directions.length)];
-        directions = directions.filter(e => e != direction);
-        console.log('moving in direction ' + direction);
+        // console.log('build continent do loop directions:');
+        // console.log(directions);
+        let tempSeed = undefined;
         do {
-          newSeed = this.getNewTileCoordinates(newSeed.x, newSeed.y, direction);
-          console.log('seeds:');
-          console.log(seeds);
-          console.log('newSeed:');
-          console.log(newSeed);
-          console.log('seeds includes newSeed? ' + seeds.includes(newSeed));
-        } while (seeds.includes(newSeed));
+          let direction = directions[Math.floor(Math.random()*directions.length)];
+          directions = directions.filter(e => e != direction);
+          // console.log('moving in direction ' + direction);
+          tempSeed = this.getNewTileCoordinates(newSeed.x, newSeed.y, direction);
+          // console.log('seeds:');
+          // console.log(seeds);
+          // console.log('newSeed:');
+          // console.log(tempSeed);
+          // console.log('seeds includes newSeed? ' + seeds.includes(newSeed));
+        } while (tempSeed.x == -1 && tempSeed.y == -1);
+        newSeed = tempSeed;
         seeds.push({x:newSeed.x, y:newSeed.y});
-        console.log('pushed seed:');
-        console.log(seeds);
+        // console.log('pushed seed:');
+        // console.log(seeds);
 
         // 8. fill out all directions
-        console.log(tilesLeft + ' tiles left before filling around new seed');
-        tilesLeft = this.fillNewTile(newSeed.x, newSeed.y, tilesLeft, directions);
-        console.log(tilesLeft + ' tiles left after filling around new seed');
+        // console.log(tilesLeft + ' tiles left before filling around new seed');
+        tilesLeft = this.fillNewTile(newSeed.x, newSeed.y, tilesLeft, this.getPossibleDirections(newSeed.x, newSeed.y));
+        // console.log(tilesLeft + ' tiles left after filling around new seed');
 
         // 9. go back to the seed, pick a different direction, and use that as the new seed
         // 10. fill out all directions, repeat until all directions filled out
@@ -303,27 +319,37 @@ class Board {
 
     // 3. randomly pick a move
     let direction = directions[Math.floor(Math.random()*directions.length)];
-    console.log('direction to try: ' + direction);
+    // console.log('direction to try: ' + direction);
 
     // 4. add a tile there if it doesn't have one
     let newCoords = this.getNewTileCoordinates(x,y,direction);
 
-    try {
-      if (this.tiles[newCoords.y][newCoords.x].terrains.name) {} //noop
-    } catch (e) {
-      this.tiles[newCoords.y][newCoords.x] = new Tile ({ "id": newCoords.x + ":" + newCoords.y, "terrain":this.registry.getRegisteredItem('terrains', 'grassland')});
-      tilesLeft--;
-      console.log('Added new tile at ' + newCoords.x + ', ' + newCoords.y + ' leaving ' + tilesLeft + ' tiles left');
+    // console.log(newCoords);
+    // console.log({x: -1, y: -1});
+    // console.log(newCoords == {x: -1, y: -1});
+    if (newCoords.x > -1 && newCoords.y > -1){
+      try {
+        // console.log(this.tiles[newCoords.y][newCoords.x]);
+        if (this.tiles[newCoords.y][newCoords.x].terrain.name) {
+          // console.log('filling tile that is already there, noop');
+        } //noop
+      } catch (e) {
+        // console.log('no tile at ' + (newCoords.x) + ', ' + (newCoords.y) + ' so create new tile');
+        //TODO: maybe randomly throw in a lake tile and don't decrement the tilesLeft count?
+        this.tiles[newCoords.y][newCoords.x] = new Tile ({ "id": newCoords.x + ":" + newCoords.y, "terrain":this.registry.getRegisteredItem('terrains', 'grassland')});
+        tilesLeft--;
+        // console.log('Added new tile at ' + newCoords.x + ', ' + newCoords.y + ' leaving ' + tilesLeft + ' tiles left');
+      }
     }
 
     // 5. drop that move from the array
     directions = directions.filter(e => e !== direction);
-    console.log('directions left:');
-    console.log(directions);
+    // console.log('directions left:');
+    // console.log(directions);
 
     // 6. randomly pick a move, add a tile there, drop that move from the array, repeat until no more moves
     tilesLeft = this.fillNewTile(x, y, tilesLeft, directions);
-    console.log('after recursion there are ' + tilesLeft + ' tiles left');
+    // console.log('after recursion there are ' + tilesLeft + ' tiles left');
 
     return tilesLeft;
   }
@@ -335,49 +361,65 @@ class Board {
 
     // 2. if there is already a tile there, drop it from the array of possible moves
     directions = directions.filter(e => !this.checkSurroundingTiles(x, y).find(a => e == a));
-    console.log('possible directions:');
-    console.log(directions);
+    // console.log('possible directions:');
+    // console.log(directions);
 
     return directions;
   }
 
   getNewTileCoordinates(x,y,direction){
-    let newTilex = 0;
-    let newTiley = 0;
+    let newTilex = -1;
+    let newTiley = -1;
     switch(direction) {
       case 1:
-        newTilex = x - 1;
-        newTiley = y + 1;
+        if (x > 0 && y < (this.height - 1)){
+          newTilex = x - 1;
+          newTiley = y + 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 2:
-        newTilex = x - 0;
-        newTiley = y + 1;
+        if (y < (this.height - 1)){
+          newTilex = x - 0;
+          newTiley = y + 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 3:
-        newTilex = x + 1;
-        newTiley = y + 1;
+        if (x < (this.width - 1) && y < (this.height - 1)){
+          newTilex = x + 1;
+          newTiley = y + 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 4:
-        newTilex = x - 1;
-        newTiley = y - 0;
+        if (x > 0){
+          newTiley = y - 0;
+          newTilex = x - 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       // case 5:
       //   break;
       case 6:
-        newTilex = x + 1;
-        newTiley = y - 0;
+        if (x < (this.width - 1)){
+          newTilex = x + 1;
+          newTiley = y - 0;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 7:
-        newTilex = x - 1;
-        newTiley = y - 1;
+        if (x > 0 && y > 0){
+          newTilex = x - 1;
+          newTiley = y - 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 8:
-        newTilex = x - 0;
-        newTiley = y - 1;
+        if (y > 0){
+          newTilex = x - 0;
+          newTiley = y - 1;
+        }// else { console.log('trying to move off the board'); }
         break;
       case 9:
-        newTilex = x + 1;
-        newTiley = y - 1;
+        if (x < (this.width - 1) && y > 0){
+          newTilex = x + 1;
+          newTiley = y - 1;
+        }// else { console.log('trying to move off the board'); }
         break;
     }
     return {x:newTilex, y:newTiley};
