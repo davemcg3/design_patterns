@@ -28,18 +28,17 @@ class Board {
     let waterTiles = Math.ceil(totalTiles * waterPercentage / 100);
     let landTiles = totalTiles - waterTiles;
     console.log(waterTiles + ' water ' + landTiles + ' land = ' + totalTiles + ' tiles');
-    let islandTiles = 0; //Math.ceil(landTiles * 2 / 100); // TODO: figure out algorithm to tell if a tile can be an island
+    let islandTiles = Math.ceil(landTiles * 4 / 100); // TODO: figure out algorithm to tell if a tile can be an island
     let continentTiles = landTiles - islandTiles;
     let tilesPerContinent = continentTiles / continentCount;
     console.log(tilesPerContinent + ' tiles per continent for ' + continentCount + ' continents and ' + islandTiles + ' island tile equals ' + landTiles + ' land tiles');
 
     //will eventually need a better way to pick seed locations but for now let's go upper-right and lower-left
     //upper-right
-    // TODO: Properly fix bug with 0-indexed arrays being out of bounds. For example, height 3 75% tile rounded up is tile 3, but row count only goes up to 2
-    // TODO: Randomize seed location within a bounded range
-    let seed1x = Math.floor(this.width * 75 / 100);
-    let seed1y = Math.floor(this.height * 25 / 100);
-    console.log('seed 1: ' + seed1x + ', ' + seed1y);
+    let rangedWidth = 60 + Math.floor(Math.random()*20);
+    let rangedHeight = Math.floor(Math.random()*25);
+    let seed1x = Math.floor(this.width * rangedWidth / 100);
+    let seed1y = Math.floor(this.height * rangedHeight / 100);
     //this.checkSurroundingTiles(seed1x, seed1y);
     // console.log(this.tiles);
             // this.tiles[seed1y][seed1x] = new Tile ({ "id": seed1x + ":" + seed1y, "terrain":registry.getRegisteredItem('terrains', 'grassland')});
@@ -119,10 +118,10 @@ class Board {
 
 
 
-    // TODO: Randomize seed location within a bounded range
-    let seed2x = Math.floor(this.width * 25 / 100);
-    let seed2y = Math.floor(this.height * 75 / 100);
-    console.log('seed 2: ' + seed2x + ', ' + seed2y);
+    rangedWidth = Math.floor(Math.random()*25);
+    rangedHeight = 60 + Math.floor(Math.random()*20);
+    let seed2x = Math.floor(this.width * rangedWidth / 100);
+    let seed2y = Math.floor(this.height * rangedHeight / 100);
     // this.tiles[seed2y][seed2x] = new Tile ({ "id": seed2x + ":" + seed2y, "terrain":registry.getRegisteredItem('terrains', 'grassland')});
 
     this.buildContinent(seed2x, seed2y, tilesPerContinent);
@@ -198,15 +197,10 @@ class Board {
     //
     // } while (directions.length > 0);
 
-    //TODO:figure out island seeding
-    //algorithm might look like:
-      //generate array of placeholder tiles
-      //pick tile not in array of picked tiles (randomly-ish?)
-      //add tile coordinates to array of picked tiles
-      //if placeholder, check surrounding tiles
-      //if surrounding are placeholders generate island
-        //maybe check surrounding tiles of surrounding tiles and add another tile for a larger island
-      //if more islands and tiles left to pick from, begin again
+    //add islands
+    if (islandTiles > 0) {
+      this.seedIslands(islandTiles);
+    }
 
     //fill in our water tiles
     console.log('filling in water tiles');
@@ -219,11 +213,11 @@ class Board {
       }
     }
     console.log('water tiles filled in');
-    for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
-        console.log(this.tiles[i][j]);
-      }
-    }
+    // for (let i = 0; i < this.height; i++) {
+    //   for (let j = 0; j < this.width; j++) {
+    //     console.log(this.tiles[i][j]);
+    //   }
+    // }
 
     // change the terrain image directly and check the terrain reference in the board object changed to show we are using shared memory
     // console.log(registry.terrains.grassland);
@@ -429,7 +423,14 @@ class Board {
     //based on a standard keyboard number pad
     //there's probably a more clever way to do this but this works for now
     //catches here are noops
-    let filled = [5];
+    let filled = [];
+    //check passed-in tile
+    try {
+      if (this.tiles[y][x].terrain.name) {
+        filled.push(5);
+      }
+    } catch (e) {}
+
     //check left tiles
     if (x > 0) {
       //upper
@@ -517,6 +518,129 @@ class Board {
     }
 
     return filled;
+  }
+
+  seedIslands(islandTiles){
+    //TODO:figure out island seeding
+      //generate array of placeholder tiles
+      let findPlaceholderTiles = function(self){
+        let placeholders = [];
+        for (let i = 0; i < self.height; i++) {
+          for (let j = 0; j < self.width; j++) {
+            if (self.tiles[i][j] == "placeholder"){
+              placeholders.push({x:j,y:i});
+            }
+          }
+        }
+        return placeholders;
+      }
+
+      //pick tile not in array of picked tiles (randomly-ish?)
+      let tryRandomTile = function(self, possibleIslandLocations){
+        return possibleIslandLocations[Math.floor(Math.random() * (possibleIslandLocations.length - 1))];
+      }
+
+      //add tile coordinates to array of picked tiles
+      //check surrounding tiles
+      //if surrounding are placeholders generate island
+        //maybe check surrounding tiles of surrounding tiles and add another tile for a larger island
+      //if more islands and tiles left to pick from, begin again
+
+
+    //algorithm might look like:
+    //generate array of placeholder tiles
+    let possibleIslandLocations = findPlaceholderTiles(this);
+    console.log('possible island locations:');
+    console.log(possibleIslandLocations);
+
+    let triedIslandLocations = [];
+    //pick tile not in array of picked tiles (randomly-ish?)
+    let tileToTry = tryRandomTile(this, possibleIslandLocations);
+    //add tile coordinates to array of picked tiles
+    triedIslandLocations.push(tileToTry);
+    console.log('tile to try:');
+    console.log(tileToTry);
+
+    //check surrounding tiles
+    let filledTiles = this.checkSurroundingTiles(tileToTry.x, tileToTry.y);
+    console.log(filledTiles);
+
+    let confirmedIslandLocations = [];
+    //if surrounding are placeholders add location to array of confirmed potentials
+    if (filledTiles.length == 0) {
+      confirmedIslandLocations.push(tileToTry);
+    }
+
+    let pickedLocation = [];
+    //pick location from possible locations
+    pickedLocation.push(confirmedIslandLocations[Math.floor(Math.random()*(confirmedIslandLocations.length - 1))]);
+
+    //generate island at random location from confirmed potentials
+    // this.tiles[pickedLocation.y][pickedLocation.x] = new Tile ({ "id": pickedLocation.x + ":" + pickedLocation.y, "terrain":this.registry.getRegisteredItem('terrains', 'grassland')});
+    // islandTiles--;
+
+    //check surrounding tiles
+    console.log(pickedLocation);
+    let directions = this.getPossibleDirections(pickedLocation[pickedLocation.length - 1].x,pickedLocation[pickedLocation.length - 1].y);
+    console.log(directions);
+    let tempSeed = undefined;
+    do {
+      let direction = directions[Math.floor(Math.random()*directions.length)];
+      directions = directions.filter(e => e != direction);
+      console.log('moving in direction ' + direction);
+      tempSeed = this.getNewTileCoordinates(pickedLocation[pickedLocation.length - 1].x, pickedLocation[pickedLocation.length - 1].y, direction);
+    } while (tempSeed.x == -1 && tempSeed.y == -1);
+    console.log('tempSeed:');
+    console.log(tempSeed);
+
+    //check surrounding tiles
+    filledTiles = this.checkSurroundingTiles(tempSeed.x, tempSeed.y);
+    console.log(filledTiles);
+
+    if (filledTiles.length == 0) {
+      pickedLocation.push(tempSeed);
+    }
+    console.log('island squares:');
+    console.log(pickedLocation);
+
+
+    // do {
+    //   // 7. go back to the seed, pick a direction, and use that as the new seed
+    //   directions = [];
+    //   for (let i of Array(9).keys()) { directions.push(i + 1) };
+    //   directions = directions.filter(e => e != 5);
+    //   // console.log('build continent do loop directions:');
+    //   // console.log(directions);
+    //   let tempSeed = undefined;
+    //   do {
+    //     let direction = directions[Math.floor(Math.random()*directions.length)];
+    //     directions = directions.filter(e => e != direction);
+    //     // console.log('moving in direction ' + direction);
+    //     tempSeed = this.getNewTileCoordinates(newSeed.x, newSeed.y, direction);
+    //     // console.log('seeds:');
+    //     // console.log(seeds);
+    //     // console.log('newSeed:');
+    //     // console.log(tempSeed);
+    //     // console.log('seeds includes newSeed? ' + seeds.includes(newSeed));
+    //   } while (tempSeed.x == -1 && tempSeed.y == -1);
+    //   newSeed = tempSeed;
+    //   seeds.push({x:newSeed.x, y:newSeed.y});
+    //   // console.log('pushed seed:');
+    //   // console.log(seeds);
+    //
+    //   // 8. fill out all directions
+    //   // console.log(tilesLeft + ' tiles left before filling around new seed');
+    //   tilesLeft = this.fillNewTile(newSeed.x, newSeed.y, tilesLeft, this.getPossibleDirections(newSeed.x, newSeed.y));
+    //   // console.log(tilesLeft + ' tiles left after filling around new seed');
+    //
+    //   // 9. go back to the seed, pick a different direction, and use that as the new seed
+    //   // 10. fill out all directions, repeat until all directions filled out
+    //   // 11. go back to the seed, randomly pick a direction, move there and randomly pick a direction, use that as the new seed and fill out all the directions
+    //   // 12. continue until out of continent tiles
+    // } while (tilesLeft > 0);
+
+      //maybe check surrounding tiles of surrounding tiles and add another tile for a larger island
+    //if more islands and tiles left to pick from, begin again
   }
 
   draw(){
