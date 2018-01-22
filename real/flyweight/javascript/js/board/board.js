@@ -554,25 +554,37 @@ class Board {
     console.log(possibleIslandLocations);
 
     let triedIslandLocations = [];
-    //pick tile not in array of picked tiles (randomly-ish?)
-    let tileToTry = tryRandomTile(this, possibleIslandLocations);
-    //add tile coordinates to array of picked tiles
-    triedIslandLocations.push(tileToTry);
-    console.log('tile to try:');
-    console.log(tileToTry);
-
-    //check surrounding tiles
-    let filledTiles = this.checkSurroundingTiles(tileToTry.x, tileToTry.y);
-    console.log(filledTiles);
-
     let confirmedIslandLocations = [];
-    //if surrounding are placeholders add location to array of confirmed potentials
-    if (filledTiles.length == 0) {
-      confirmedIslandLocations.push(tileToTry);
+
+    while (triedIslandLocations.length < possibleIslandLocations.length) {
+      //pick tile not in array of picked tiles (randomly-ish?)
+      let tileToTry = tryRandomTile(this, possibleIslandLocations);
+      // console.log('tile to try:');
+      // console.log(tileToTry);
+
+      //add tile coordinates to array of picked tiles
+      triedIslandLocations.push(tileToTry);
+      // console.log('tried island locations:');
+      // console.log(triedIslandLocations);
+
+      //check surrounding tiles
+      let filledTiles = this.checkSurroundingTiles(tileToTry.x, tileToTry.y);
+      // console.log('filled tiles:');
+      // console.log(filledTiles);
+
+      //if surrounding are placeholders add location to array of confirmed potentials
+      if (filledTiles.length == 0) {
+        confirmedIslandLocations.push(tileToTry);
+        // console.log('pushed ' + tileToTry.x + ', ' + tileToTry.y);
+      }
+
     }
 
     let pickedLocation = [];
     //pick location from possible locations
+    console.log('confirmedIslandLocations:');
+    console.log(confirmedIslandLocations);
+    console.log('length: ' + confirmedIslandLocations.length);
     pickedLocation.push(confirmedIslandLocations[Math.floor(Math.random()*(confirmedIslandLocations.length - 1))]);
 
     //generate island at random location from confirmed potentials
@@ -594,7 +606,7 @@ class Board {
     console.log(tempSeed);
 
     //check surrounding tiles
-    filledTiles = this.checkSurroundingTiles(tempSeed.x, tempSeed.y);
+    let filledTiles = this.checkSurroundingTiles(tempSeed.x, tempSeed.y);
     console.log(filledTiles);
 
     if (filledTiles.length == 0) {
@@ -602,7 +614,6 @@ class Board {
     }
     console.log('island squares:');
     console.log(pickedLocation);
-
 
     // do {
     //   // 7. go back to the seed, pick a direction, and use that as the new seed
