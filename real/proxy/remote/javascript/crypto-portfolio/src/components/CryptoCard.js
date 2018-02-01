@@ -7,7 +7,6 @@ import CardText from 'react-toolbox/lib/card/CardText';
 import CardActions from 'react-toolbox/lib/card/CardActions';
 import Button from 'react-toolbox/lib/button/Button';
 import Configurator from './Configurator';
-import CoinMarketCapApi from './CoinMarketCapApi';
 
 class CryptoCard extends React.Component {
 
@@ -31,7 +30,6 @@ class CryptoCard extends React.Component {
   }
 
   handleConfiguratorSave (settings) {
-    console.log(settings);
     this.setState(Object.assign(this.state, settings));
   }
 
@@ -54,7 +52,6 @@ class CryptoCard extends React.Component {
         <CardText>
           <p>Have not been able to establish remote communicaiton.</p>
           <Configurator ref={(conf) => { this.configurator = conf; }} callback={this.handleConfiguratorSave} />
-          <CoinMarketCapApi/>
         </CardText>
         <CardActions>
           <Button label="Configure" onClick={this.handleClick} />

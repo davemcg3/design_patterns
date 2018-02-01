@@ -7,6 +7,7 @@ import NavDrawer from 'react-toolbox/lib/layout/NavDrawer';
 import Panel from 'react-toolbox/lib/layout/Panel';
 import Sidebar from 'react-toolbox/lib/layout/Sidebar';
 import CryptoCard from './CryptoCard'
+import CoinMarketCapApi from './CoinMarketCapApi';
 import Fab from './Fab.js'
 import logo from '../logo.svg';
 
@@ -17,7 +18,7 @@ class LayoutTest extends React.Component {
         drawerActive: false,
         drawerPinned: false,
         sidebarPinned: false,
-        cards: []
+        cards: [{ currency: 'Ripple', quantity: 1 }]
       };
       // this.addCard = this.addCard.bind(this);
     }
@@ -75,6 +76,7 @@ class LayoutTest extends React.Component {
                       </div>
                     </div>
                     <Fab callback={this.addCard}></Fab>
+                    <CoinMarketCapApi cards={this.state.cards}/>
                 </Panel>
                 <Sidebar pinned={ this.state.sidebarPinned } width={ 5 }>
                     <div><IconButton icon='close' onClick={ this.toggleSidebar }/></div>
