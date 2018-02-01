@@ -11,18 +11,18 @@ module Target
   end
 end
 
+class Adaptee
+  def specificRequest
+    print "specificRequest in Adaptee called\n"
+  end
+end
+
 class Adapter
   include Target
 
   def request
     adaptee = Adaptee.new
     adaptee.specificRequest
-  end
-end
-
-class Adaptee
-  def specificRequest
-    print "specificRequest in Adaptee called\n"
   end
 end
 
