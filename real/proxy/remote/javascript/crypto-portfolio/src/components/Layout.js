@@ -8,8 +8,9 @@ import Panel from 'react-toolbox/lib/layout/Panel';
 import Sidebar from 'react-toolbox/lib/layout/Sidebar';
 import CryptoCard from './CryptoCard'
 import CoinMarketCapApi from './CoinMarketCapApi';
-import Fab from './Fab.js'
+import Fab from './Fab.js';
 import logo from '../logo.svg';
+import Subheader from './Subheader.js';
 
 class LayoutTest extends React.Component {
     constructor(props) {
@@ -42,7 +43,8 @@ class LayoutTest extends React.Component {
         currency: settings.currency,
         quantity: settings.quantity,
         price: '',
-        value: ''
+        value: '',
+        displayTitle: ''
       }
       ])}, function () {
         // console.log(this.state.cards);
@@ -50,14 +52,20 @@ class LayoutTest extends React.Component {
       });
     }
 
+    removeCard = (card) => {
+      this.setState({cards: this.state.cards.filter(function(entry) { return (entry != card) ? entry : false })})
+    }
+
     updateCards = (cards) => {
       // console.log('in the layout callback, cards:', cards);
-      this.setState(cards: cards);
+      this.setState({cards: cards});
     }
 
     reconfigureCard = (card) => {
       var result = this.search(this.state.cards, card.currency, 'currency');
       result.quantity = card.quantity;
+      var reconfigured = this.refs.api.calculateValueOnCard(result);
+      result.value = reconfigured.value;
       // force re-render
       this.setState(this.state);
     }
@@ -141,24 +149,13 @@ class LayoutTest extends React.Component {
                         <img src={logo} className="App-logo" alt="logo" />
                         <h1 className="App-title">Crypto Portfolio</h1>
                       </header>
-                      <p className="App-intro">
-                        To get started, add a Card with your crypto and amount.
-                      </p>
-                      <h2>
-                        Portfolio Value: { this.state.cards.map( card => (this.isNumeric(card.value)) ? card.value : 0 ).reduce(function (
-                                            accumulator,
-                                            currentValue,
-                                            currentIndex,
-                                            array
-                                          ) {
-                                            return accumulator + currentValue;
-                                          }).toLocaleString('us-US', { style: 'currency', currency: 'USD' }) }</h2>
+                      <Subheader cards={this.state.cards} isNumeric={this.isNumeric} />
                       {/*<Checkbox label='Pin drawer' checked={this.state.drawerPinned} onChange={this.toggleDrawerPinned} />*/}
                       {/*<Checkbox label='Show sidebar' checked={this.state.sidebarPinned} onChange={this.toggleSidebar} />*/}
                       <div id="cardHolder">
                         {
                           this.state.cards.map((item, i) => (
-                              <CryptoCard key={i} settings={item} reconfigureCard={this.reconfigureCard}/>
+                              <CryptoCard key={i} settings={item} reconfigureCard={this.reconfigureCard} handleDelete={this.removeCard}/>
                           ))
                         }
                       </div>

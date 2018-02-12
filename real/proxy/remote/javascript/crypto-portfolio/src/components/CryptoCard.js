@@ -20,10 +20,15 @@ class CryptoCard extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
     this.handleConfiguratorSave = this.handleConfiguratorSave.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   handleClick () {
     this.configurator.loadOptions({currency: this.props.settings.currency, quantity: this.props.settings.quantity, active:true})
+  }
+
+  handleDelete () {
+    this.props.handleDelete(this.props.settings);
   }
 
   handleCallback(settings){
@@ -33,6 +38,14 @@ class CryptoCard extends React.Component {
   handleConfiguratorSave (settings) {
     // this.setState(Object.assign(this.state, settings));
     this.props.reconfigureCard(settings);
+  }
+
+  returnTitle () {
+    console.log(typeof(this.props.settings.displayTitle) + '::' + this.props.settings.displayTitle + '//' + typeof('') + '::*' + '' + '*');
+    if (this.props.settings.displayTitle !== '')
+      return this.props.settings.displayTitle;
+    else
+      return this.props.currency;
   }
 
   render() {
@@ -50,7 +63,7 @@ class CryptoCard extends React.Component {
         <CardTitle
           // title={this.state.currency}
           // subtitle={"Quantity: " + this.state.quantity + ', Price: ' + this.state.price }
-          title={this.props.settings.currency}
+          title={this.returnTitle()}
         />
         <CardText style={{"textAlign": "left"}}>
           {/* <p>Have not been able to establish remote communicaiton.</p> */}
@@ -61,7 +74,7 @@ class CryptoCard extends React.Component {
         </CardText>
         <CardActions>
           <Button label="Configure" onClick={this.handleClick} />
-          {/*<Button label="Action 2" />*/}
+          <Button label="Delete" onClick={this.handleDelete}/>
         </CardActions>
       </Card>
     );
