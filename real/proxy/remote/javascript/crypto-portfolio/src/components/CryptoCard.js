@@ -12,17 +12,18 @@ class CryptoCard extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      currency: props.settings.currency,
-      quantity: props.settings.quantity
-    };
+    // this.state = {
+    //   currency: props.settings.currency,
+    //   quantity: props.settings.quantity,
+    //   price: props.settings.price
+    // };
     this.handleClick = this.handleClick.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
     this.handleConfiguratorSave = this.handleConfiguratorSave.bind(this);
   }
 
   handleClick () {
-    this.configurator.loadOptions({currency: this.state.currency, quantity: this.state.quantity, active:true})
+    this.configurator.loadOptions({currency: this.props.settings.currency, quantity: this.props.settings.quantity, active:true})
   }
 
   handleCallback(settings){
@@ -30,7 +31,8 @@ class CryptoCard extends React.Component {
   }
 
   handleConfiguratorSave (settings) {
-    this.setState(Object.assign(this.state, settings));
+    // this.setState(Object.assign(this.state, settings));
+    this.props.reconfigureCard(settings);
   }
 
   render() {
@@ -46,11 +48,15 @@ class CryptoCard extends React.Component {
           {/*image="https://placeimg.com/800/450/nature"*/}
         {/*/>*/}
         <CardTitle
-          title={this.state.currency}
-          subtitle={"Quantity: " + this.state.quantity}
+          // title={this.state.currency}
+          // subtitle={"Quantity: " + this.state.quantity + ', Price: ' + this.state.price }
+          title={this.props.settings.currency}
         />
-        <CardText>
-          <p>Have not been able to establish remote communicaiton.</p>
+        <CardText style={{"textAlign": "left"}}>
+          {/* <p>Have not been able to establish remote communicaiton.</p> */}
+          <p>{"Quantity: " + this.props.settings.quantity }</p>
+          <p>Price: { this.props.settings.price.toLocaleString('us-US', { style: 'currency', currency: 'USD' }) }</p>
+          <p>Value: { this.props.settings.value.toLocaleString('us-US', { style: 'currency', currency: 'USD' }) }</p>
           <Configurator ref={(conf) => { this.configurator = conf; }} callback={this.handleConfiguratorSave} />
         </CardText>
         <CardActions>
