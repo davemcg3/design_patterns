@@ -1,0 +1,8 @@
+.ProfileProxy-box {
+  width: 350px;
+  /* height: 150px; */
+  padding: 1em;
+  margin: 1em;
+  border: 1px solid #ccc;
+  display: inline-block;
+}
