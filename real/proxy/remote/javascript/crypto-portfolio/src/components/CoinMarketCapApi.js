@@ -83,9 +83,11 @@ class CoinMarketCapApi extends React.Component {
   }
 
   setTitleOnCard(card, remoteReturn) {
-    console.log('remoteReturn:', remoteReturn);
-    card = Object.assign({}, card, {displayTitle: (remoteReturn.name + ' (' + remoteReturn.symbol + ')')});
-    console.log(card.displayTitle);
+    if (remoteReturn !== undefined){
+      console.log('remoteReturn:', remoteReturn);
+      card = Object.assign({}, card, {displayTitle: (remoteReturn.name + ' (' + remoteReturn.symbol + ')')});
+      console.log(card.displayTitle);
+    }
     return card;
   }
 
