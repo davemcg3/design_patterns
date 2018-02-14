@@ -47,7 +47,7 @@ export default class FullProfile extends Component{
       if (this.state.loadedProfile[attribute].length > 0 &&
         this.state.loadedProfile[attribute][0] !== "" &&
         exclude.indexOf(attribute) === -1)
-        output += '<div class="FullProfile-attribute">' + attribute + ': </div><div class="FullProfile-attribute">' + this.state.loadedProfile[attribute] + '</div><br />'
+        output += '<div class="FullProfile-row"></div><div class="FullProfile-attribute alignRight"><strong>' + attribute + ':</strong></div><div class="FullProfile-attribute alignLeft greyBackground">' + this.state.loadedProfile[attribute] + '</div></div>'
     }
     return output;
   }

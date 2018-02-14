@@ -4,4 +4,21 @@
 
 .FullProfile-attribute {
   display: inline-block;
+  width: 40%;
+  padding: 1em;
+}
+
+.FullProfile-row {
+}
+
+.alignLeft {
+  text-align: left;
+}
+
+.alignRight {
+  text-align: right;
+}
+
+.greyBackground {
+  background-color: #ccc;
 }

@@ -33,12 +33,12 @@ class App extends Component {
   }
 
   profilesLoaded(profiles){
-    console.log(profiles);
+    // console.log(profiles);
     if (profiles.houses) {
       var profile_proxies = profiles.houses.map((profile, i) => ({id: i, name: profile.name, region: profile.region}))
       this.setState({allProfiles: profiles.houses, profile_proxies: profile_proxies});
     }
-    console.log(this.state.allProfiles[0]);
+    // console.log(this.state.allProfiles[0]);
   }
 
   render() {
