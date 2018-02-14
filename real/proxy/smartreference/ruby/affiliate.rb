@@ -15,6 +15,11 @@ class Advertiser
     puts "Welcome to the program #{@name}!\n"
   end
 
+  # You can also get to this information by filtering the sales array in the run method, but that will be an expensive
+  # operation once there a lot of sales. The right way to do that is to move it out to a proper db, which we would have
+  # on production, but even then sometimes it's a smart idea to have a shortcut method like this for getting that data
+  # depending on the size of your system, and it also makes a nice sanity check to make sure the data is getting to all
+  # the places you expect it.
   def addSale count=1, payout=0
     @saleCount += count
     @totalPayout += payout
