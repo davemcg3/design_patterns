@@ -9,8 +9,8 @@ export default class ProfileProxy extends Component{
   render () {
     return (
       <div className="ProfileProxy-box">
-        <h1>{this.props.settings.name}</h1>
-        <h2>Region: {this.props.settings.region}</h2>
+        <h2>{this.props.settings.name}</h2>
+        <h3>Region: {this.props.settings.region}</h3>
         <button onClick={this.loadProfile.bind(this)}>Load Profile</button>
       </div>
     )

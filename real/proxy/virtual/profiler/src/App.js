@@ -49,9 +49,9 @@ class App extends Component {
           <h1 className="App-title">Profiler</h1>
         </header>
         <div id="App-ProfileProxies">
-          <p className="App-intro">
+          {/* <p className="App-intro">
             Pick a profile!
-          </p>
+          </p> */}
           {
             this.state.profile_proxies.map((item, i) => (
                 <ProfileProxy key={i} settings={item} loadProfile={this.loadProfile} />

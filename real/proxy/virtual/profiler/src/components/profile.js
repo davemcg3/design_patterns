@@ -9,16 +9,17 @@ export default class FullProfile extends Component{
       profile: props.loadedProfile,
       loadedProfile: {}
     };
+    this.loadProfile = this.loadProfile.bind(this);
   }
 
   loadProfile(profile){
-    console.log('loading profile');
-    console.log(profile);
-    this.setState({loadedProfile: profile, loading: false});
+    // console.log('loading profile');
+    // console.log(profile);
+    this.setState({loadedProfile: profile, loading: false}, this.supplementInformation)
   }
 
   unloadProfile(){
-    console.log('unloading profile');
+    // console.log('unloading profile');
     this.setState({loadedProfile: {}, loading: true});
   }
 
@@ -61,6 +62,70 @@ export default class FullProfile extends Component{
       return this.renderError();
     }
   }
+
+  supplementInformation() {
+    var self = this;
+
+    // console.log(this.state.loadedProfile);
+    // console.log('houses: ', res);
+    var exclude = ["url"];
+    var profile = this.state.loadedProfile;
+    var asyncCalls = [];
+
+      for(var attribute in profile){
+        // console.log('profile: ', profile);
+        // console.log(attribute + ': ' + profile[attribute]);
+        if (profile[attribute].toString().startsWith('https://www.anapioficeandfire.com/api/')) {
+            // console.log(attribute + ' array? ' + (profile[attribute] instanceof Array));
+            if (profile[attribute] instanceof Array) {
+              var calls = profile[attribute];
+              for (var call in calls) {
+                if (exclude.indexOf(attribute) === -1) {
+
+                  asyncCalls.push(new Promise(function(resolve) {
+                    resolve({promise: fetch(calls[call]), key: attribute});
+                    profile[attribute] = '';
+                    this.setState({loadedProfile: profile});
+
+                }));
+              }
+            }
+            } else {
+              // console.log('in else => ' + attribute + ': ' + profile[attribute]);
+              if (exclude.indexOf(attribute) === -1) {
+                asyncCalls.push(new Promise(function(resolve) {
+                  resolve({promise: fetch(profile[attribute]), key: attribute});
+                  profile[attribute] = '';
+                  this.setState({loadedProfile: profile});
+                }));
+                // console.log(asyncCalls);
+              }
+            }
+        }
+
+      };
+
+      Promise.all(asyncCalls)
+        .then(function (values) {
+          // console.log(values);
+          values.forEach(function(value){
+            // console.log('value:',value);
+            // console.log('value.promise:',value.promise);
+            value.promise.then(res => res.json())
+              .then(data => {
+                // console.log('data: ',data, 'value: ', value);
+                if (profile[value.key] !== '') {
+                  profile[value.key] += ', ';
+                }
+                profile[value.key] += data.name;
+                // console.log('profile:',profile);
+                self.setState({loadedProfile: profile});
+              });
+          });
+        });
+
+}
+
 
   render () {
     return (
