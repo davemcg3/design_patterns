@@ -1,0 +1,32 @@
+Sync:
+geth --testnet removedb
+geth --testnet --syncmode "fast" --datadir "/media/dave/13a4001c-abf0-4704-969f-f443ac35006d/usr/local/share/ethereum/ropsten-testnet" --rpc --rpcapi db,eth,net,web3,personal --cache=2048  --rpcport 8545 --rpcaddr "localhost" --rpccorsdomain "*" --bootnodes "enode://20c9ad97c081d63397d7b685a412227a40e23c8bdc6688c6f37e97cfbc22d2b4d1db1510d8f61e6a8866ad7f0e17c02b14182d37ea7c3c8b9c2683aeb6b733a1@52.169.14.227:30303,enode://6ce05930c72abc632c58e2e4324f7c7ea478cec0ed4fa2528982cf34483094e9cbc9216e7aa349691242576d552a2a56aaeae426c5303ded677ce455ba1acd9d@13.84.180.240:30303,enode://94c15d1b9e2fe7ce56e458b9a3b672ef11894ddedd0c6f247e0f1d3487f52b66208fb4aeb8179fce6e3a749ea93ed147c37976d67af557508d199d9594c35f09@192.81.208.223:30303"
+
+Mine:
+geth --testnet --syncmode "fast" --datadir "/media/dave/13a4001c-abf0-4704-969f-f443ac35006d/usr/local/share/ethereum/ropsten-testnet" --rpc --rpcapi db,eth,net,web3,personal --cache=2048  --rpcport 8545 --rpcaddr "localhost" --rpccorsdomain "*" --bootnodes "enode://20c9ad97c081d63397d7b685a412227a40e23c8bdc6688c6f37e97cfbc22d2b4d1db1510d8f61e6a8866ad7f0e17c02b14182d37ea7c3c8b9c2683aeb6b733a1@52.169.14.227:30303,enode://6ce05930c72abc632c58e2e4324f7c7ea478cec0ed4fa2528982cf34483094e9cbc9216e7aa349691242576d552a2a56aaeae426c5303ded677ce455ba1acd9d@13.84.180.240:30303,enode://94c15d1b9e2fe7ce56e458b9a3b672ef11894ddedd0c6f247e0f1d3487f52b66208fb4aeb8179fce6e3a749ea93ed147c37976d67af557508d199d9594c35f09@192.81.208.223:30303" --mine console 2>> ~/.ethereum-testnet.log
+
+--verbosity=6
+
+Attach:
+geth attach ipc://media/dave/13a4001c-abf0-4704-969f-f443ac35006d/usr/local/share/ethereum/ropsten-testnet/geth.ipc
+
+Check sync:
+eth.syncing
+
+Mine and expose port for node:
+geth --testnet --datadir "/media/dave/13a4001c-abf0-4704-969f-f443ac35006d/usr/local/share/ethereum/ropsten-testnet" --rpc --rpcaddr "localhost" --rpcport "8545"  --rpccorsdomain="*" --mine console 2>> ~/.ethereum-testnet.log
+
+Check logs:
+tail -f ~/.ethereum-testnet.log
+
+Check balance:
+web3.fromWei(eth.getBalance(eth.coinbase), "ether")
+
+Send transaction (define from, to, and amount first):
+eth.sendTransaction({from: from, to: to, value: amount})
+
+Get transaction data:
+eth.getTransaction("0x1786ffd39975833bf1ed2f09657d1585cb3f2cc73f60ac04277eef1")
+
+Get node info
+admin.nodeInfo
