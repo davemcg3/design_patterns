@@ -1,6 +1,11 @@
-# JSON Builder with Undo
+# Command Pattern
+The command pattern is a powerful way to abstract away the implementation of the results of the command from the command object, so the command object doesn't need to know anything about the implementation in order to direct the receiver action to run a particular action.
 
-The core of this is an implementation of the command pattern that lets you build a JSON object by adding, removing, and changing key-value pairs with an undo function.
+## JSON Builder with Undo
+The core functionality of this example lets you build a JSON object by adding, removing, and changing key-value pairs (JSON attributes, essentially) with an undo function.
+
+## List Builder with Undo
+Extended the example simply by adding a new type of Receiver, this time a List object that conforms to the AbstractReceiver class, that can add, remove, and change things on the internal list object. Didn't need to change anything in the client, invoker, or concrete command classes. Included the new type of receiver in the main file and added commands to add, remove, change, and undo things from that internal list. Interface for the command object is identical. Being able to simply swap in a new receiver without touching the command interface shows the real power of the Command pattern.
 
 ## Usage
 From the project root run `docker-compose up` and then visit `http://localhost` in your browser.

@@ -1,6 +1,7 @@
 "use strict";
 
 import Client from '/js/client.js';
+import List from '/js/list.js';
 
 // (function main() {
 class Main {
@@ -20,6 +21,19 @@ class Main {
     client.execute({command: 'undo', value: 2});
     client.execute({command: 'undo', value: 2});
     client.execute({command: 'undo'});
+
+    window.command.listClient = new Client({receiver: new List});
+    var listClient = window.command.listClient;
+
+    listClient.execute({command: 'add', key: null, value: 'milk'});
+    listClient.execute({command: 'add', key: null, value: 'milk'});
+    listClient.execute({command: 'add', key: null, value: 'bread'});
+    listClient.execute({command: 'add', key: null, value: 'soy milk'});
+    listClient.execute({command: 'change', key: 'soy milk', value: 'ice cream'});
+    listClient.execute({command: 'remove', key: null, value: 'ice cream'});
+    listClient.execute({command: 'add', key: null, value: 'apples'});
+    listClient.execute({command: 'undo', key: null, value: null});
+    listClient.execute({command: 'undo', key: null, value: 3});
   }
 }
   // })();

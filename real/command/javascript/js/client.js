@@ -6,10 +6,11 @@ import AttributeChange from '/js/attribute_change.js';
 import Undo from '/js/undo.js';
 
 export default class Client {
-  constructor(options) {
+  constructor(options={}) {
     this.invoker = new Invoker;
-    this.receiver = new Thing;
+    this.receiver = options.receiver || new Thing;
   }
+
   execute(options) {
     switch(options.command) {
       case 'add':

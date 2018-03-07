@@ -3,6 +3,18 @@ export default class AbstractReceiver {
     this.history = options.history || []
   }
 
+  add() {
+    throw "Not Implemented"
+  }
+
+  remove() {
+    throw "Not Implemented"
+  }
+
+  change() {
+    throw "Not Implemented"
+  }
+
   undo(){
     throw "Not Implemented"
   }
