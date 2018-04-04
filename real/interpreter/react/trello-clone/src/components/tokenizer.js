@@ -30,8 +30,8 @@ class Tokenizer extends Component {
     // TODO: Abstract these out to the calling function
     var pattern = /".+"|\w+/g;
     var tokens = command.match(pattern);
-    console.log(command);
-    console.log(tokens);
+    // console.log(command);
+    // console.log(tokens);
 
     // TODO: Abstract these out too
     var outputStack = [];
@@ -41,22 +41,23 @@ class Tokenizer extends Component {
     var prepositions = ["to"];
     for(var i = 0; i < tokens.length; i++) {
       var token = tokens[i];
-      console.log('starting loop on ' + token);
+      // console.log('starting loop on ' + token);
 
       if (nouns.indexOf(token) > -1) {
         //lookahead
-        console.log('in nouns, lookahead: ' + tokens[i + 1]);
+        // console.log('in nouns, lookahead: ' + tokens[i + 1]);
         // nouns always take a string argument for a title
         outputStack.push(new TreeNode(new Token(token, tokens[++i])));
       } else if (prepositions.indexOf(token) > -1) {
-        console.log('in prepositions');
+        // console.log('in prepositions');
         // TODO: figure out how to use the context to infer the correct type of element and create it as a receiving
         // element for the command (i.e. if we have a card we know the receiving elements is a column so it should be
         // optional in the grammar
-        // for now drop the preposition and grab the next 2 tokens which should define a noun
+        // for now drop the preposition and grab the next 2 tokens which should define a noun TODO: Add validation!
         outputStack.push(new TreeNode(new Token(tokens[++i], tokens[++i])));
+        // operationStack.push(token);
       } else if (verbs.indexOf(token) > -1){
-        console.log('in verbs');
+        // console.log('in verbs');
         operationStack.push(token);
       }
     }
@@ -67,7 +68,7 @@ class Tokenizer extends Component {
       outputStack.push(new TreeNode(operationStack.pop(), left, right));
     }
 
-    console.log(outputStack);
+    // console.log(outputStack);
     return outputStack[0];
   }
 

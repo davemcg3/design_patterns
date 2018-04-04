@@ -1,12 +1,12 @@
 export default class TreeNode {
-  constructor(value, leftChildNode="", rightChildNode=""){
+  constructor(value, subject="", receiver=""){
     this.value = value;
-    this.leftChildNode = leftChildNode;
-    this.rightChildNode = rightChildNode;
+    this.subject = subject;
+    this.receiver = receiver;
   }
 
   toString(count=1){
       count++;
-    return this.value.toString() + "\t=>" + this.leftChildNode.toString(count) + "\n" + Array(count+1).join("\t") + "=>" + this.rightChildNode.toString(count);
+    return this.value.toString() + "\t=>" + this.subject.toString(count) + "\n" + Array(count+1).join("\t") + "=>" + this.receiver.toString(count);
   }
 }
