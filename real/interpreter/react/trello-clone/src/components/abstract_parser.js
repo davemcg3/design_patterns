@@ -12,11 +12,11 @@ export default class AbstractParser {
     return this.parser.processNode(node);
   }
 
-  // processTerminalNode(node) {
-  //   return this.parser.processTerminalNode(node);
-  // }
-  //
-  // processNonTerminal(node) {
-  //   return this.parser.processNonTerminal(node);
-  // }
+  processTerminalNode(node) {
+    return this.parser.processTerminalNode(node);
+  }
+
+  processNonTerminal(node, interpreter) {
+    return this.parser.processNonTerminal(node, interpreter);
+  }
 }

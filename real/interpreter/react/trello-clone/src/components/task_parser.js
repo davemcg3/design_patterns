@@ -1,4 +1,7 @@
 import Command from "../prototypes/command";
+import Board from "../prototypes/board";
+import Column from "../prototypes/column";
+import Card from "../prototypes/card";
 
 export default class TaskParser {
 
@@ -7,13 +10,8 @@ export default class TaskParser {
     this.queryLibrarian = queryLibrarian;
   }
 
-  processNode(node) {
-    if (node.subject == "" && node.receiver == ""){
-      return this.processTerminalNode(node);
-    } else {
-      return this.processNonTerminal(node);
-    }
-  }
+  // processNode(node) {
+  // }
 
   processTerminalNode(node) {
     // query the librarian to see if noun exists
@@ -22,14 +20,14 @@ export default class TaskParser {
     return this.queryLibrarian(new Command('find_or_create', node.value));
   }
 
-  processNonTerminal(node) {
+  processNonTerminal(node, interpreter) {
     let self = this;
     // Note: Subject and receiver are not necessarily tied to the correct objects. Parse the hierarchy!
     if (node.subject !== "") {
-      var subject = this.processNode(node.subject);
+      var subject = interpreter.processNode(node.subject);
     }
     if (node.receiver !== "") {
-      var receiver = this.processNode(node.receiver);
+      var receiver = interpreter.processNode(node.receiver);
     }
     console.log('subject: ', subject);
     console.log('receiver: ', receiver);
@@ -40,9 +38,9 @@ export default class TaskParser {
     });
     // if we only have one noun process the verb for that noun
     if (nodeCount === 1) {
-      [subject, receiver].forEach(function(node) {
+      [subject, receiver].forEach(function(leaf) {
         if (node !== undefined) {
-          self.sendToDispatch(new Command('register', node));
+          self.sendToDispatch(new Command('register', leaf));
         }
       });
     } else if (nodeCount === 2) {
@@ -64,6 +62,15 @@ export default class TaskParser {
           console.log('we have something here');
         } else {
           console.log('we have a problem');
+        }
+      } else if (subject instanceof Card) {
+        if (receiver instanceof Board) {
+          console.log('that\'s not right.');
+        } else if (receiver instanceof Column){
+          console.log('flawless');
+          self.sendToDispatch(new Command('register', node));
+        } else if (receiver instanceof Card) {
+          console.log('uh oh');
         }
       }
     }

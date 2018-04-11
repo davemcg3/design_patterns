@@ -7,6 +7,7 @@ import Receiver from "./components/receiver";
 import Tokenizer from "./components/tokenizer";
 import Command from "./prototypes/command";
 import AbstractFactory from "./components/abstract_factory";
+import UiBoard from "./components/ui_board";
 
 class App extends Component {
   constructor(props){
@@ -32,6 +33,8 @@ class App extends Component {
         return this.factory.generate(command);
       case 'register':
         return this.librarian.register(command);
+      case 'query':
+        return this.librarian.query(command);
       default:
         console.log("Don't know what to do with this command,", command);
     }
@@ -55,6 +58,7 @@ class App extends Component {
         <Receiver sendToDispatch={this.dispatch} />
         <Tokenizer ref={instance => { this.tokenizer = instance; }} />
         <AbstractFactory ref={instance => { this.factory = instance; }} />
+        <UiBoard sendToDispatch={this.dispatch} />
       </div>
     );
   }
