@@ -1,0 +1,20 @@
+nav {
+  width: 25%;
+  float: left;
+  text-align: left;
+}
+
+nav a {
+  display: block;
+  width: 100%;
+  padding: 0.5em;
+  padding-left: 20px;
+  background-color: #222;
+  color: #ccc;
+  text-decoration:none;
+}
+
+nav a:hover {
+  background-color: #444;
+  color: #fff;
+}
