@@ -6,18 +6,34 @@ export default class Navigation extends Component {
     super(props);
     this.state = {
       links: [
-        ["Google", "https://www.google.com"],
-        ["Yahoo", "https://www.yahoo.com"],
-        ["Bing", "https://www.bing.com"]
-      ]
+        ["Home", "#"],
+        ["About", "#"],
+        ["Contact", "#"]
+      ],
+      backgroundColor: "#222",
+      color: "#eee"
+    }
+    this.receiveColors = this.receiveColors.bind(this);
+    this.props.registerWithMediator(this.receiveColors);
+    this.componentStyle = this.componentStyle.bind(this);
+  }
+
+  receiveColors(message) {
+    this.setState({backgroundColor: message.background, color: message.foreground})
+  }
+
+  componentStyle() {
+    return {
+      backgroundColor: this.state.backgroundColor,
+      color: this.state.color
     }
   }
 
   render() {
     return (
-      <nav>
+      <nav style={this.componentStyle()}>
         { this.state.links.map((item, i) => (
-          <a key={i} href={item[1]}>{item[0]}</a>
+          <a key={i} href={item[1]} style={this.componentStyle()}>{item[0]}</a>
         )) }
       </nav>
     )

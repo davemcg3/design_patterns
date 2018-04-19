@@ -15,6 +15,12 @@ export default class Mediator extends Component {
     this.setState({peers: peers});
   }
 
+  sendMessageToPeers(message){
+    this.state.peers.forEach(function(peer){
+      peer(message);
+    })
+  }
+
   render() {
     return (
       <div></div>
