@@ -58,8 +58,9 @@ export default class TaskParser {
       } else if (subject instanceof Column) {
         if (receiver instanceof Board) {
           console.log('we have something here');
+          self.sendToDispatch(new Command('register', node));
         } else if (receiver instanceof Card) {
-          console.log('we have something here');
+          console.log('put your game down, flip it, and reverse it');
         } else {
           console.log('we have a problem');
         }

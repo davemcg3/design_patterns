@@ -15,8 +15,8 @@ class Librarian extends Component {
       boards: props.boards || [],
       columns: props.columns || [],
       cards: props.cards || [],
-      columns_on_boards: props.columns_on_boards || {},
-      cards_on_columns: props.cards_on_columns || {}
+      columns_on_boards: props.columns_on_boards || [],
+      cards_on_columns: props.cards_on_columns || []
     };
     this.register = this.register.bind(this);
     this.find = this.find.bind(this);
@@ -94,8 +94,11 @@ class Librarian extends Component {
     console.log(command.attributes.noun, command.attributes.data)
     var association;
     if (command.attributes.noun === "board"){
-      association = "columns_on_board";
-      console.log(this.state[association]);
+      let board = this.props.sendToDispatch(new Command('find', command.attributes));
+      console.log('board',board);
+      console.log('boards:',this.state.boards);
+      association = "columns_on_boards";
+      console.log(association + ': ', this.state[association]);
     }
 
     return this.state[association];

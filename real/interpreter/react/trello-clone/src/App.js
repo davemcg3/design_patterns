@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import Interpreter from './components/interpreter.js';
 import Librarian from "./components/librarian";
@@ -33,6 +33,9 @@ class App extends Component {
         return this.factory.generate(command);
       case 'register':
         return this.librarian.register(command);
+      case 'find':
+      case 'find_or_create':
+        return this.librarian.find(command);
       case 'query':
         return this.librarian.query(command);
       default:
@@ -49,8 +52,8 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          {/*<img src={logo} className="App-logo" alt="logo" />*/}
+          <h1 className="App-title">Bello</h1>
         </header>
 
         <Interpreter sendToDispatch={this.dispatch} queryLibrarian={this.queryLibrarian} ref={instance => { this.interpreter = instance; }} />
