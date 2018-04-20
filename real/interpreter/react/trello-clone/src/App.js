@@ -27,6 +27,7 @@ class App extends Component {
         this.dispatch(new Command('interpret', this.tokenizer.tokenize(command)));
         break;
       case 'interpret':
+        console.log('App command: ', command);
         this.interpreter.interpret(command);
         break;
       case 'create':
@@ -36,6 +37,8 @@ class App extends Component {
       case 'find':
       case 'find_or_create':
         return this.librarian.find(command);
+      case 'find_by_id':
+        return this.librarian.find(command, true);
       case 'query':
         return this.librarian.query(command);
       default:

@@ -38,7 +38,7 @@ class Tokenizer extends Component {
     var operationStack = [];
     var nouns = ["board", "column", "card"];
     var verbs = ["add", "remove", "move", "update"]
-    var prepositions = ["to"];
+    var prepositions = ["to", "from"];
     for(var i = 0; i < tokens.length; i++) {
       var token = tokens[i];
       // console.log('starting loop on ' + token);

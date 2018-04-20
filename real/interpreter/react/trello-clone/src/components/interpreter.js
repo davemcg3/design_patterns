@@ -13,7 +13,7 @@ class Interpreter extends Component {
   // command is a JSON object
   interpret(command) {
     // interpret parsedStructure
-    // console.log('interpreter', command.attributes);
+    console.log('interpreter', command.attributes);
     this.processNode(command.attributes);
     // generate command object
   }
@@ -28,12 +28,12 @@ class Interpreter extends Component {
 
   processTerminalNode(node){
     // terminal nodes are nouns
-    console.log('terminal node, value:', node.value);
+    // console.log('terminal node, value:', node.value);
     return this.parser.processTerminalNode(node);
   }
 
   processNonTerminal(node){
-    console.log('non-terminal node, value:', node.value);
+    // console.log('non-terminal node, value:', node.value);
     this.parser.processNonTerminal(node, this);
   }
 

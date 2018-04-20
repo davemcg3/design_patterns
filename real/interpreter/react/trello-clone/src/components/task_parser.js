@@ -17,10 +17,12 @@ export default class TaskParser {
     // query the librarian to see if noun exists
     // if noun does not exist create it
     // return the reference to the noun
-    return this.queryLibrarian(new Command('find_or_create', node.value));
+    console.log('processing terminal node:',node,node.value)
+    return this.sendToDispatch(new Command('find_or_create', node.value));
   }
 
   processNonTerminal(node, interpreter) {
+    console.log('processing non terminal node:',node)
     let self = this;
     // Note: Subject and receiver are not necessarily tied to the correct objects. Parse the hierarchy!
     if (node.subject !== "") {
@@ -36,6 +38,7 @@ export default class TaskParser {
     [subject, receiver].forEach(function(node){
       if (node !== undefined) nodeCount++;
     });
+    console.log('we have ' + nodeCount + ' nodes')
     // if we only have one noun process the verb for that noun
     if (nodeCount === 1) {
       [subject, receiver].forEach(function(leaf) {
@@ -57,8 +60,8 @@ export default class TaskParser {
         }
       } else if (subject instanceof Column) {
         if (receiver instanceof Board) {
-          console.log('we have something here');
-          self.sendToDispatch(new Command('register', node));
+          // console.log('we have something here');
+          console.log('should be success:',self.sendToDispatch(new Command('register', node)));
         } else if (receiver instanceof Card) {
           console.log('put your game down, flip it, and reverse it');
         } else {
