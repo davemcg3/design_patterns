@@ -7,19 +7,31 @@ import PropTypes from 'prop-types';
 
 class Form extends React.Component {
   static propTypes = {
-    textArea: PropTypes.string,
+    note: PropTypes.string,
+    fetchNote: PropTypes.func.isRequired,
+    setNote: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
+    this.props.fetchNote()
+  }
+
+  updateNote(event) {
+    this.props.setNote(event.target.value)
   }
 
   render() {
-    const { textArea } = this.props;
+    const { note } = this.props;
+    const textareaStyle = {
+      width: '100%',
+      height: '100%',
+      minHeight: '10em',
+    }
 
     return (
       <div>
         <h1>Note:</h1>
-        <textarea></textarea>
+        <textarea onChange={this.updateNote} value={note} style={textareaStyle} />
       </div>
     );
   }

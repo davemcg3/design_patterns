@@ -5,14 +5,15 @@
 import { connect } from 'react-redux';
 
 import Form from '../components/Form';
-// import { fetchServerTimestamp } from '../actions/server-timestamp';
+import { fetchNote, setNote } from '../actions/form'
 
-const mapStateToProps = ({ serverTimestamp }) => ({
-  // textArea: serverTimestamp.timestamp,
+const mapStateToProps = ({ note }) => ({
+  note: note.note || '',
 });
 
 const mapDispatchToProps = {
-  // fetchServerTimestamp,
+  fetchNote,
+  setNote,
 };
 
 export default connect(

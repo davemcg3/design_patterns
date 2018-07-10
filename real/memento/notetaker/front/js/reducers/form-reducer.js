@@ -2,10 +2,10 @@
  * @file The Server Timestamp reducer.
  */
 
-import { SERVER_TIMESTAMP_UPDATE } from '../actions/form';
+import { NOTE_ADD } from '../actions/form';
 
 const initialState = {
-  textArea: null,
+  note: null,
 };
 
 const formReducer = (state = initialState, action = {}) => {
@@ -13,7 +13,7 @@ const formReducer = (state = initialState, action = {}) => {
     case NOTE_ADD:
       return {
         ...state,
-        textArea: action.textArea,
+        note: action.note,
       };
 
     default:

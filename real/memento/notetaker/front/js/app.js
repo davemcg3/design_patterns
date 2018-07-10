@@ -14,7 +14,6 @@ import thunkMiddleware from 'redux-thunk';
 import '../css/app.scss';
 
 import rootReducer from './reducers/root-reducer';
-import HelloWorld from './containers/HelloWorldContainer';
 import Form from './containers/FormContainer';
 import getLogger from './util/logger';
 
@@ -32,10 +31,10 @@ const init = () => {
 
   // Init store
   const store = createStoreWithMiddleware(rootReducer);
+  log.info('init() :: App booted.');
 
   ReactDom.render(
     <Provider store={store}>
-      <HelloWorld />
       <Form />
     </Provider>,
     document.getElementById('app'),

@@ -9,5 +9,5 @@ import formReducer from './form-reducer';
 
 export default combineReducers({
   serverTimestamp: serverTimestampReducer,
-  formReducer: formReducer,
+  note: formReducer,
 });

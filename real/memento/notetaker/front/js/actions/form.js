@@ -1,12 +1,14 @@
 export const NOTE_ADD = 'note/ADD';
-export const addNote = note => ({ type: "NOTE_ADD", payload: note });
+export const addNote = note => ({ type: NOTE_ADD, payload: note });
 
-export const fetchServerTimestamp = () => async (dispatch) => {
-  try {
-    const res = await axios.get('/home/timestamp');
+const noteUpdate = (note) => {
+  return { type: NOTE_ADD, note }
+}
 
-    dispatch(serverTimestampUpdate(res.data.timestamp));
-  } catch (error) {
-    log.error(error);
-  }
-};
+export const fetchNote = () => async (dispatch) => {
+  dispatch(noteUpdate('test note should come from server call'))
+}
+
+export const setNote = note => async (dispatch) => {
+  dispatch(noteUpdate(note))
+}
