@@ -17,5 +17,18 @@ module RailsReactBoilerplate
     config.generators do |generator|
       generator.assets false
     end
+
+    #cors configuration
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', :headers => :any, :methods => [:get, :post, :options]
+      end
+    end
+    #autoloads lib folder during production
+    config.eager_load_paths << Rails.root.join('lib')
+
+    #autoloads lib folder during development
+    config.autoload_paths << Rails.root.join('lib')
   end
 end
