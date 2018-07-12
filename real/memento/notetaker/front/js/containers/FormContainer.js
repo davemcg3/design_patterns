@@ -1,5 +1,5 @@
 /**
- * @file Hello World container.
+ * @file Form container.
  */
 
 import { connect } from 'react-redux';

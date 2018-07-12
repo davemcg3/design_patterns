@@ -14,6 +14,7 @@ import thunkMiddleware from 'redux-thunk';
 import '../css/app.scss';
 
 import rootReducer from './reducers/root-reducer';
+import Auth from './containers/AuthContainer';
 import Form from './containers/FormContainer';
 import getLogger from './util/logger';
 
@@ -35,7 +36,10 @@ const init = () => {
 
   ReactDom.render(
     <Provider store={store}>
-      <Form />
+      <div id="app-main">
+        <Auth />
+        <Form />
+      </div>
     </Provider>,
     document.getElementById('app'),
   );

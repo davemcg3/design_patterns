@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: %i[login register]
   skip_before_action :authenticate_request, only: %i[login register]
 
   # POST /register
@@ -15,6 +16,7 @@ class UsersController < ApplicationController
   def login
     authenticate params[:email], params[:password]
   end
+
   def test
     render json: {
       message: 'You have passed authentication and authorization test'
@@ -37,6 +39,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
+    Rails.logger.debug "params: #{params.inspect}"
     params.permit(
       :name,
       :email,
