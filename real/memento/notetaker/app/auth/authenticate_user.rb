@@ -18,7 +18,6 @@ class AuthenticateUser
 
   def user
     user = User.find_by_email(email)
-    Rails.logger.debug "user: #{user.inspect}"
     return user if user && user.authenticate(password)
 
     errors.add :user_authentication, 'Invalid credentials'

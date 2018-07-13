@@ -1,3 +1,9 @@
+import axios from 'axios';
+
+import getLogger from '../util/logger';
+
+const log = getLogger('AuthAction');
+
 export const NOTE_ADD = 'note/ADD';
 export const addNote = note => ({ type: NOTE_ADD, payload: note });
 
@@ -11,4 +17,11 @@ export const fetchNote = () => async (dispatch) => {
 
 export const setNote = note => async (dispatch) => {
   dispatch(noteUpdate(note))
+}
+
+export const saveNote = note => async (dispatch) => {
+  const res = await axios.post('/notes.json', {
+    note: note
+  })
+
 }

@@ -16,6 +16,7 @@ import '../css/app.scss';
 import rootReducer from './reducers/root-reducer';
 import Auth from './containers/AuthContainer';
 import Form from './containers/FormContainer';
+import History from './containers/HistoryContainer';
 import getLogger from './util/logger';
 
 const log = getLogger('App');
@@ -39,6 +40,7 @@ const init = () => {
       <div id="app-main">
         <Auth />
         <Form />
+        <History />
       </div>
     </Provider>,
     document.getElementById('app'),

@@ -11,7 +11,6 @@ class Auth extends React.Component {
     postAuthDetails: PropTypes.func,
     postLogin: PropTypes.func,
     logout: PropTypes.func,
-    allOfStore: PropTypes.object,
   };
 
   constructor(props) {

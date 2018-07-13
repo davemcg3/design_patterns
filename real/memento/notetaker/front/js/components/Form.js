@@ -20,6 +20,10 @@ class Form extends React.Component {
     this.props.setNote(event.target.value)
   }
 
+  saveNote(event) {
+    this.props.saveNote(this.props.note)
+  }
+
   render() {
     const { note } = this.props;
     const textareaStyle = {
@@ -31,7 +35,8 @@ class Form extends React.Component {
     return (
       <div>
         <h1>Note:</h1>
-        <textarea onChange={this.updateNote} value={note} style={textareaStyle} />
+        <textarea onChange={this.updateNote.bind(this)} value={note} style={textareaStyle} />
+        <button onClick={this.saveNote.bind(this)}>Save</button>
       </div>
     );
   }
