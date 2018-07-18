@@ -4,6 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import {setTokenFromStorage} from "../actions/auth"
 
 class Auth extends React.Component {
   static propTypes = {
@@ -11,6 +12,7 @@ class Auth extends React.Component {
     postAuthDetails: PropTypes.func,
     postLogin: PropTypes.func,
     logout: PropTypes.func,
+    setTokenFromStorage: PropTypes.func,
   };
 
   constructor(props) {
@@ -26,6 +28,10 @@ class Auth extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
+
+    if (localStorage.getItem('notetaker_jwt')) {
+      this.props.setTokenFromStorage(localStorage.getItem('notetaker_jwt'))
+    }
   }
 
   componentDidMount() {

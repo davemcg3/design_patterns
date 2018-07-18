@@ -4,6 +4,7 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import HistoryItem from './HistoryItem'
 
 class History extends React.Component {
   static propTypes = {
@@ -23,7 +24,12 @@ class History extends React.Component {
     return (
       <div>
         <h2>History</h2>
-        <p>{ this.props.history.history }</p>
+        {
+          this.props.history.history && this.props.history.history.map((item) => {
+            console.log('item.data: ', item.data)
+            return <HistoryItem key={item.id} data={item.data} />
+          })
+        }
       </div>
     );
   }

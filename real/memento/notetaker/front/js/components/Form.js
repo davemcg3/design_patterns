@@ -12,8 +12,10 @@ class Form extends React.Component {
     setNote: PropTypes.func.isRequired,
   };
 
-  componentDidMount() {
-    this.props.fetchNote()
+  constructor(props) {
+    super(props)
+    this.updateNote = this.updateNote.bind(this)
+    this.saveNote = this.saveNote.bind(this)
   }
 
   updateNote(event) {
@@ -35,8 +37,8 @@ class Form extends React.Component {
     return (
       <div>
         <h1>Note:</h1>
-        <textarea onChange={this.updateNote.bind(this)} value={note} style={textareaStyle} />
-        <button onClick={this.saveNote.bind(this)}>Save</button>
+        <textarea onChange={this.updateNote} value={note} style={textareaStyle} />
+        <button onClick={this.saveNote}>Save</button>
       </div>
     );
   }

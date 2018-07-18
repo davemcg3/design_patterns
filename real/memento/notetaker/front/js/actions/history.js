@@ -17,10 +17,17 @@ const historyFetch = (history) => {
 export const fetchHistory = () => async (dispatch) => {
   try {
     console.log('fetching history')
-    const res = await axios.get('/home/timestamp');
+    const jwt = localStorage.getItem('notetaker_jwt')
+    const res = await axios({
+      method: 'get',
+      url: '/notes.json',
+      headers: {
+        Authorization: 'Bearer ' + jwt
+      }
+    });
     console.log(res);
 
-    dispatch(historyFetch(res.data.timestamp));
+    dispatch(historyFetch(res.data));
   } catch (error) {
     log.error(error);
   }

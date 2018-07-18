@@ -5,9 +5,9 @@
 import { connect } from 'react-redux';
 
 import Auth from '../components/Auth';
-import { postAuthDetails, postLogin, logout } from '../actions/auth'
+import { postAuthDetails, postLogin, logout, setTokenFromStorage } from '../actions/auth'
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isLoggedIn: !!state.auth.token,
 });
 
@@ -15,6 +15,7 @@ const mapDispatchToProps = {
   postAuthDetails,
   postLogin,
   logout,
+  setTokenFromStorage,
 };
 
 export default connect(

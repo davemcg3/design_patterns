@@ -7,9 +7,9 @@ import { connect } from 'react-redux';
 import History from '../components/History';
 import { fetchHistory } from '../actions/history'
 
-const mapStateToProps = ( state ) => ({
+const mapStateToProps = state => ({
   history: state.history,
-  isLoggedIn: !!state.auth.token
+  isLoggedIn: !!state.auth.token,
 });
 
 const mapDispatchToProps = {

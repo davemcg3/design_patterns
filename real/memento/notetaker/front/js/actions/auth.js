@@ -24,7 +24,9 @@ export const postLogin = (email, password) => async (dispatch) => {
 
     // should get a JWT back, dispatch to redux
     if(res.status === 200) {
+      // lose token on refresh, so should put in localstorage or cookie instead
       dispatch(authLogin(res.data.access_token));
+      localStorage.setItem('notetaker_jwt', res.data.access_token);
     }
   } catch (error) {
     log.error(error);
@@ -67,3 +69,11 @@ export const postAuthDetails = (name, email, password) => async (dispatch) => {
     log.error(error);
   }
 };
+
+export const setTokenFromStorage = (token) => async (dispatch) => {
+  try {
+    dispatch(authLogin(token))
+  } catch (error) {
+    log.error(error);
+  }
+}
