@@ -7,10 +7,15 @@ export default function HistoryItem(data) {
   //   data: PropTypes.object,
   // };
 
+  function LoadItem(){
+    console.log('TODO: Load History Item ' + data.id)
+  }
+
   // render() {
   return (
     <div>
-      {data.data}
+      <button onClick={LoadItem}>Load</button>
+      {data.data.data}
     </div>
   )
   // }

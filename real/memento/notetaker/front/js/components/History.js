@@ -13,21 +13,23 @@ class History extends React.Component {
     isLoggedIn: PropTypes.bool,
   };
 
-  render() {
-    const { isLoggedIn } = this.props;
-
-    console.log('this.props.history: ', this.props.history)
-    if (isLoggedIn && !this.props.history.history) {
-      this.props.fetchHistory();
+  componentWillReceiveProps(nextProps) {
+    console.log('History willReceiveProps: ', nextProps)
+    console.log('isLoggedIn: ', this.props.isLoggedIn)
+    console.log('history: ', this.props.history.history)
+    if (nextProps.props.isLoggedIn && !nextProps.props.history.history) {
+      nextProps.props.fetchHistory()
     }
+  }
 
+  render() {
     return (
       <div>
         <h2>History</h2>
         {
           this.props.history.history && this.props.history.history.map((item) => {
             console.log('item.data: ', item.data)
-            return <HistoryItem key={item.id} data={item.data} />
+            return <HistoryItem key={item.id} data={item} />
           })
         }
       </div>

@@ -9,6 +9,7 @@ import {setTokenFromStorage} from "../actions/auth"
 class Auth extends React.Component {
   static propTypes = {
     isLoggedIn: PropTypes.bool,
+    token: PropTypes.string,
     postAuthDetails: PropTypes.func,
     postLogin: PropTypes.func,
     logout: PropTypes.func,
@@ -21,16 +22,31 @@ class Auth extends React.Component {
       name: "",
       email: "",
       password: "",
+      attempts: 0,
     }
-    console.log('isLoggedIn: ', this.props.isLoggedIn)
 
     this.handleChange = this.handleChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleLogout = this.handleLogout.bind(this)
+  }
 
+  static MAX_ATTEMPTS = 5
+
+  componentWillMount() {
+    console.log('localStorage token: ', localStorage.getItem('notetaker_jwt'))
     if (localStorage.getItem('notetaker_jwt')) {
       this.props.setTokenFromStorage(localStorage.getItem('notetaker_jwt'))
+    }
+    console.log('token: ', this.props.token)
+
+    console.log('isLoggedIn: ', this.props.isLoggedIn)
+    console.log('(' + this.state.attempts + ')attempts < (' + Auth.MAX_ATTEMPTS + ') MAX_ATTEMPTS ? ', (this.state.attempts < Auth.MAX_ATTEMPTS))
+    console.log('email: ', this.state.email)
+    console.log('password: ', this.state.password)
+    if(!this.props.isLoggedIn && this.state.attempts < Auth.MAX_ATTEMPTS && this.state.email && this.state.password){
+      this.setState({attempts: this.state.attempts + 1})
+      this.handleLogin()
     }
   }
 
@@ -52,9 +68,9 @@ class Auth extends React.Component {
     this.props.postAuthDetails(this.state.name, this.state.email, this.state.password);
   }
 
-  handleLogin(e) {
+  handleLogin(e=null) {
     console.log('handleLogin e: ', e)
-    e.preventDefault()
+    if(e) e.preventDefault()
     this.props.postLogin(this.state.email, this.state.password);
     console.log('isLoggedIn: ', this.props.isLoggedIn)
 
@@ -70,6 +86,7 @@ class Auth extends React.Component {
   render() {
     // TODO: Refactor these forms out to multiple sub-components
     let { isLoggedIn } = this.props;
+    console.log('token: ', this.props.token, ', isLoggedIn? ', isLoggedIn)
 
     if (isLoggedIn) {
       return (
@@ -79,6 +96,7 @@ class Auth extends React.Component {
         </div>
       )
     }
+
     return (
       <div>
         <form onSubmit={this.handleSubmit}>

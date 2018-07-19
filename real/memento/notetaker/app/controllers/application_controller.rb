@@ -9,7 +9,9 @@ class ApplicationController < ActionController::Base
   # [...]
   private
   def authenticate_request
+    Rails.logger.debug "authenticate request"
     @current_user = AuthorizeApiRequest.call(request.headers).result
+    Rails.logger.debug "current user: #{current_user.inspect}"
     render json: { error: 'Not Authorized' }, status: 401 unless @current_user
   end
 

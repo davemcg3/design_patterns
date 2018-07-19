@@ -12,14 +12,18 @@ class JsonWebToken
     end
 
     def decode(token)
+      Rails.logger.debug "decoding json web token #{token}"
       #decodes the token to get user data (payload)
       body = JWT.decode(token, Rails.application.secrets.secret_key_base)[0]
+      Rails.logger.debug body
       HashWithIndifferentAccess.new body
 
         # raise custom error to be handled by custom handler
     rescue JWT::ExpiredSignature, JWT::VerificationError => e
+      Rails.logger.debug "Expired Signature"
       raise ExceptionHandler::ExpiredSignature, e.message
     rescue JWT::DecodeError, JWT::VerificationError => e
+      Rails.logger.debug "Decode Error"
       raise ExceptionHandler::DecodeError, e.message
     end
   end

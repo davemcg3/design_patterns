@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: %i[login register]
+  # skip_before_action :verify_authenticity_token, only: %i[login register]
   skip_before_action :authenticate_request, only: %i[login register]
 
   # POST /register

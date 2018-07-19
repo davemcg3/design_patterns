@@ -40,6 +40,8 @@ const authLogout = () => {
 }
 
 export const logout = () => async(dispatch) => {
+  console.log('logging out')
+  localStorage.setItem('notetaker_jwt', "null");
   dispatch(authLogout());
 }
 
@@ -71,6 +73,7 @@ export const postAuthDetails = (name, email, password) => async (dispatch) => {
 };
 
 export const setTokenFromStorage = (token) => async (dispatch) => {
+  console.log('setting token from storage, ', token)
   try {
     dispatch(authLogin(token))
   } catch (error) {
