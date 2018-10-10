@@ -7,8 +7,8 @@ export default function HistoryItem(data) {
   //   data: PropTypes.object,
   // };
 
-  function LoadItem(){
-    console.log('TODO: Load History Item ' + data.id)
+  function LoadItem() {
+    console.log(`TODO: Load History Item ${data.id}`)
   }
 
   // render() {

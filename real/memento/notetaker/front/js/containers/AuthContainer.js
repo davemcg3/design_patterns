@@ -8,7 +8,7 @@ import Auth from '../components/Auth';
 import { postAuthDetails, postLogin, logout, setTokenFromStorage } from '../actions/auth'
 
 const mapStateToProps = state => ({
-  isLoggedIn: state.auth.token !== "null" && !!state.auth.token,
+  isLoggedIn: state.auth.token !== 'null' && !!state.auth.token,
   token: state.auth.token,
 });
 

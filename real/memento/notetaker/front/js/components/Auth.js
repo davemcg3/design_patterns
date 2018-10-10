@@ -4,7 +4,6 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import {setTokenFromStorage} from "../actions/auth"
 
 class Auth extends React.Component {
   static propTypes = {
@@ -16,12 +15,14 @@ class Auth extends React.Component {
     setTokenFromStorage: PropTypes.func,
   };
 
+  static MAX_ATTEMPTS = 5
+
   constructor(props) {
     super(props)
     this.state = {
-      name: "",
-      email: "",
-      password: "",
+      name: '',
+      email: '',
+      password: '',
       attempts: 0,
     }
 
@@ -31,8 +32,6 @@ class Auth extends React.Component {
     this.handleLogout = this.handleLogout.bind(this)
   }
 
-  static MAX_ATTEMPTS = 5
-
   componentWillMount() {
     console.log('localStorage token: ', localStorage.getItem('notetaker_jwt'))
     if (localStorage.getItem('notetaker_jwt')) {
@@ -41,11 +40,12 @@ class Auth extends React.Component {
     console.log('token: ', this.props.token)
 
     console.log('isLoggedIn: ', this.props.isLoggedIn)
-    console.log('(' + this.state.attempts + ')attempts < (' + Auth.MAX_ATTEMPTS + ') MAX_ATTEMPTS ? ', (this.state.attempts < Auth.MAX_ATTEMPTS))
+    console.log(`( ${this.state.attempts} )attempts < ( ${Auth.MAX_ATTEMPTS} ) MAX_ATTEMPTS ? `, (this.state.attempts < Auth.MAX_ATTEMPTS))
     console.log('email: ', this.state.email)
     console.log('password: ', this.state.password)
-    if(!this.props.isLoggedIn && this.state.attempts < Auth.MAX_ATTEMPTS && this.state.email && this.state.password){
-      this.setState({attempts: this.state.attempts + 1})
+    if (!this.props.isLoggedIn && this.state.attempts < Auth.MAX_ATTEMPTS
+      && this.state.email && this.state.password) {
+      this.setState({ attempts: this.state.attempts + 1 })
       this.handleLogin()
     }
   }
@@ -57,7 +57,7 @@ class Auth extends React.Component {
     // console.log('e: ', e)
     // auth details should be stored here in the component only
     this.setState({
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     })
   }
 
@@ -68,24 +68,23 @@ class Auth extends React.Component {
     this.props.postAuthDetails(this.state.name, this.state.email, this.state.password);
   }
 
-  handleLogin(e=null) {
+  handleLogin(e = null) {
     console.log('handleLogin e: ', e)
-    if(e) e.preventDefault()
+    if (e) e.preventDefault()
     this.props.postLogin(this.state.email, this.state.password);
     console.log('isLoggedIn: ', this.props.isLoggedIn)
-
   }
 
   handleLogout(e) {
     console.log('handleLogout e: ', e)
     e.preventDefault()
-    this.setState({password: ''})
+    this.setState({ password: '' })
     this.props.logout();
   }
 
   render() {
     // TODO: Refactor these forms out to multiple sub-components
-    let { isLoggedIn } = this.props;
+    const { isLoggedIn } = this.props;
     console.log('token: ', this.props.token, ', isLoggedIn? ', isLoggedIn)
 
     if (isLoggedIn) {
@@ -101,21 +100,26 @@ class Auth extends React.Component {
       <div>
         <form onSubmit={this.handleSubmit}>
           <h2>Register</h2>
-          <label>Name</label>
-          <input type="text" name="name" onChange={this.handleChange} value={this.state.name} />
-          <label>Email</label>
-          <input type="email" name="email" onChange={this.handleChange} value={this.state.email} />
-          <label>Password</label>
-          <input type="password" name="password" onChange={this.handleChange} value={this.state.password} />
+          <label htmlFor="registerName">Name
+            <input type="text" id="registerName" name="name" onChange={this.handleChange} value={this.state.name} />
+          </label>
+          <label htmlFor="registerEmail">Email
+            <input type="email" id="registerEmail" name="email" onChange={this.handleChange} value={this.state.email} />
+          </label>
+          <label htmlFor="registerPassword">Password
+            <input type="password" id="registerPassword" name="password" onChange={this.handleChange} value={this.state.password} />
+          </label>
           <button type="submit" name="submit" onClick={this.handleSubmit} >Register</button>
         </form>
         <br />
         <form onSubmit={this.handleLogin}>
           <h2>Login</h2>
-          <label>Email</label>
-          <input type="email" name="email" onChange={this.handleChange} value={this.state.email} />
-          <label>Password</label>
-          <input type="password" name="password" onChange={this.handleChange} value={this.state.password} />
+          <label htmlFor="loginEmail">Email
+            <input type="email" id="loginEmail" name="email" onChange={this.handleChange} value={this.state.email} />
+          </label>
+          <label htmlFor="loginPassword">Password
+            <input type="password" id="loginPassword" name="password" onChange={this.handleChange} value={this.state.password} />
+          </label>
           <button type="submit" name="submit" onClick={this.handleLogin} >Login</button>
         </form>
       </div>

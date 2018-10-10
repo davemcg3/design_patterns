@@ -17,13 +17,13 @@ const authLogin = (token) => {
 export const postLogin = (email, password) => async (dispatch) => {
   try {
     const res = await axios.post('/auth/login.json', {
-      email: email,
-      password: password,
+      email,
+      password,
     })
-    console.log('res: ', res)
+    log('res: ', res)
 
     // should get a JWT back, dispatch to redux
-    if(res.status === 200) {
+    if (res.status === 200) {
       // lose token on refresh, so should put in localstorage or cookie instead
       dispatch(authLogin(res.data.access_token));
       localStorage.setItem('notetaker_jwt', res.data.access_token);
@@ -39,9 +39,9 @@ const authLogout = () => {
   return { type: AUTH_LOGOUT };
 }
 
-export const logout = () => async(dispatch) => {
-  console.log('logging out')
-  localStorage.setItem('notetaker_jwt', "null");
+export const logout = () => async (dispatch) => {
+  log('logging out')
+  localStorage.setItem('notetaker_jwt', 'null');
   dispatch(authLogout());
 }
 
@@ -55,11 +55,11 @@ const authRegister = (data) => {
 export const postAuthDetails = (name, email, password) => async (dispatch) => {
   try {
     const res = await axios.post('/auth/register.json', {
-      name: name,
-      email: email,
-      password: password,
+      name,
+      email,
+      password,
     });
-    console.log('res: ', res);
+    log('res: ', res);
 
     if (res.status) {
       // login
@@ -72,8 +72,8 @@ export const postAuthDetails = (name, email, password) => async (dispatch) => {
   }
 };
 
-export const setTokenFromStorage = (token) => async (dispatch) => {
-  console.log('setting token from storage, ', token)
+export const setTokenFromStorage = token => async (dispatch) => {
+  log('setting token from storage, ', token)
   try {
     dispatch(authLogin(token))
   } catch (error) {

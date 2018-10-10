@@ -8,7 +8,7 @@ import HistoryItem from './HistoryItem'
 
 class History extends React.Component {
   static propTypes = {
-    history: PropTypes.object,
+    history: PropTypes.shape({ history: [] }),
     fetchHistory: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool,
   };
@@ -17,8 +17,8 @@ class History extends React.Component {
     console.log('History willReceiveProps: ', nextProps)
     console.log('isLoggedIn: ', this.props.isLoggedIn)
     console.log('history: ', this.props.history.history)
-    if (nextProps.props.isLoggedIn && !nextProps.props.history.history) {
-      nextProps.props.fetchHistory()
+    if (nextProps.isLoggedIn && !nextProps.history.history) {
+      nextProps.fetchHistory()
     }
   }
 

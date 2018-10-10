@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import getLogger from '../util/logger';
-import {fetchHistory} from "./history"
+import { fetchHistory } from './history'
 
 const log = getLogger('AuthAction');
 
@@ -14,7 +14,7 @@ const noteUpdate = (note) => {
 
 export const fetchNote = () => async (dispatch) => {
   // TODO: Make this component do something useful
-  // dispatch(noteUpdate('test note should come from server call'))
+  dispatch(noteUpdate('test note should come from server call'))
 }
 
 export const setNote = note => async (dispatch) => {
@@ -23,20 +23,20 @@ export const setNote = note => async (dispatch) => {
 
 export const saveNote = note => async (dispatch) => {
   const jwt = localStorage.getItem('notetaker_jwt')
-  console.log('jwt: ', jwt)
+  log('jwt: ', jwt)
   const res = await axios({
     method: 'post',
     url: '/notes.json',
     data: {
       note: {
-        data: note
-      }
+        data: note,
+      },
     },
     headers: {
-      Authorization: 'Bearer ' + jwt
-    }
+      Authorization: `Bearer ${jwt}`,
+    },
   })
-  console.log('saveNote returned: ', res)
+  log('saveNote returned: ', res)
   dispatch(noteUpdate(note))
   fetchHistory()
 }

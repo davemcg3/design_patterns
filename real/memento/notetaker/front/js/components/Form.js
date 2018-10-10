@@ -10,6 +10,7 @@ class Form extends React.Component {
     note: PropTypes.string,
     fetchNote: PropTypes.func.isRequired,
     setNote: PropTypes.func.isRequired,
+    saveNote: PropTypes.func.isRequired,
   };
 
   constructor(props) {

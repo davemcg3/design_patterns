@@ -9,7 +9,7 @@ import { fetchHistory } from '../actions/history'
 
 const mapStateToProps = state => ({
   history: state.history,
-  isLoggedIn: state.auth.token !== "null" && !!state.auth.token,
+  isLoggedIn: state.auth.token !== 'null' && !!state.auth.token,
 });
 
 const mapDispatchToProps = {
