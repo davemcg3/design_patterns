@@ -11,6 +11,7 @@ class History extends React.Component {
     // history: PropTypes.shape({ history: [] }),
     fetchHistory: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool,
+    setNote: PropTypes.func.isRequired,
   };
 
   componentWillMount(){
@@ -32,13 +33,14 @@ class History extends React.Component {
   }
 
   render() {
+    console.log(this.props.setNote)
     return (
       <div>
         <h2>History</h2>
         {
           this.props.history.history && this.props.history.history.map((item) => {
             console.log('item.data: ', item.data)
-            return <HistoryItem key={item.id} data={item} />
+            return <HistoryItem key={item.id} data={item} setNote={this.props.setNote}/>
           })
         }
       </div>

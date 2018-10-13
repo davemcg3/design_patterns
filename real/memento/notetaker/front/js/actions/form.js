@@ -23,9 +23,9 @@ export const setNote = note => async (dispatch) => {
 
 export const saveNote = note => async (dispatch) => {
   const jwt = localStorage.getItem('notetaker_jwt')
-  log('jwt: ', jwt)
+  log.info('jwt: ', jwt)
   const res = await axios({
-    method: 'post',
+    method: 'post', // TODO: adjust this method to patch if we have an id and include the id in the data for the back-end to update
     url: '/notes.json',
     data: {
       note: {
@@ -36,7 +36,7 @@ export const saveNote = note => async (dispatch) => {
       Authorization: `Bearer ${jwt}`,
     },
   })
-  log('saveNote returned: ', res)
+  log.info('saveNote returned: ', res)
   dispatch(noteUpdate(note))
   fetchHistory()
 }

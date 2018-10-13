@@ -5,7 +5,12 @@
 import { connect } from 'react-redux';
 
 import Auth from '../components/Auth';
-import { postAuthDetails, postLogin, logout, setTokenFromStorage } from '../actions/auth'
+import {
+  postAuthDetails,
+  postLogin,
+  logout,
+  setTokenFromStorage,
+} from '../actions/auth'
 
 const mapStateToProps = state => ({
   isLoggedIn: state.auth.token !== 'null' && !!state.auth.token,
