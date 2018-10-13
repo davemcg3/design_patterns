@@ -33,16 +33,16 @@ class Auth extends React.Component {
   }
 
   componentWillMount() {
-    console.log('localStorage token: ', localStorage.getItem('notetaker_jwt'))
+    console.log('components/Auth.js localStorage token: ', localStorage.getItem('notetaker_jwt'))
     if (localStorage.getItem('notetaker_jwt')) {
       this.props.setTokenFromStorage(localStorage.getItem('notetaker_jwt'))
     }
-    console.log('token: ', this.props.token)
+    console.log('components/Auth.js::componentWillMount token: ', this.props.token)
 
-    console.log('isLoggedIn: ', this.props.isLoggedIn)
-    console.log(`( ${this.state.attempts} )attempts < ( ${Auth.MAX_ATTEMPTS} ) MAX_ATTEMPTS ? `, (this.state.attempts < Auth.MAX_ATTEMPTS))
-    console.log('email: ', this.state.email)
-    console.log('password: ', this.state.password)
+    console.log('components/Auth.js::componentWillMount isLoggedIn: ', this.props.isLoggedIn)
+    console.log(`components/Auth.js::componentWillMount ( ${this.state.attempts} )attempts < ( ${Auth.MAX_ATTEMPTS} ) MAX_ATTEMPTS ? `, (this.state.attempts < Auth.MAX_ATTEMPTS))
+    console.log('components/Auth.js::componentWillMount email: ', this.state.email)
+    console.log('components/Auth.js::componentWillMount password: ', this.state.password)
     if (!this.props.isLoggedIn && this.state.attempts < Auth.MAX_ATTEMPTS
       && this.state.email && this.state.password) {
       this.setState({ attempts: this.state.attempts + 1 })
@@ -63,20 +63,20 @@ class Auth extends React.Component {
 
 
   handleSubmit(e) {
-    console.log('handleSubmit e: ', e)
+    console.log('components/Auth.js::handleSubmit e: ', e)
     e.preventDefault()
     this.props.postAuthDetails(this.state.name, this.state.email, this.state.password);
   }
 
   handleLogin(e = null) {
-    console.log('handleLogin e: ', e)
+    console.log('components/Auth.js::handleLogin e: ', e)
     if (e) e.preventDefault()
     this.props.postLogin(this.state.email, this.state.password);
     console.log('isLoggedIn: ', this.props.isLoggedIn)
   }
 
   handleLogout(e) {
-    console.log('handleLogout e: ', e)
+    console.log('components/Auth.js::handleLogout e: ', e)
     e.preventDefault()
     this.setState({ password: '' })
     this.props.logout();
@@ -85,7 +85,7 @@ class Auth extends React.Component {
   render() {
     // TODO: Refactor these forms out to multiple sub-components
     const { isLoggedIn } = this.props;
-    console.log('token: ', this.props.token, ', isLoggedIn? ', isLoggedIn)
+    console.log('components/Auth.js::render token: ', this.props.token, ', isLoggedIn? ', isLoggedIn)
 
     if (isLoggedIn) {
       return (

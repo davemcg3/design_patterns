@@ -8,18 +8,27 @@ import HistoryItem from './HistoryItem'
 
 class History extends React.Component {
   static propTypes = {
-    history: PropTypes.shape({ history: [] }),
+    // history: PropTypes.shape({ history: [] }),
     fetchHistory: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool,
   };
 
+  componentWillMount(){
+    this.maybeFetchHistory(this.props);
+  }
+
   componentWillReceiveProps(nextProps) {
-    console.log('History willReceiveProps: ', nextProps)
-    console.log('isLoggedIn: ', this.props.isLoggedIn)
-    console.log('history: ', this.props.history.history)
+    this.maybeFetchHistory(nextProps)
+  }
+
+  maybeFetchHistory(nextProps){
+    console.log('components/History.js willReceiveProps: ', nextProps)
+    console.log('components/History.js isLoggedIn: ', this.props.isLoggedIn)
+    console.log('components/History.js history: ', this.props.history.history)
     if (nextProps.isLoggedIn && !nextProps.history.history) {
       nextProps.fetchHistory()
     }
+
   }
 
   render() {

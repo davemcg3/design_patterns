@@ -2,7 +2,7 @@
  * @file App main entry point.
  */
 
-import 'babel-polyfill';
+import '@babel/polyfill';
 
 import React from 'react';
 import ReactDom from 'react-dom';
@@ -22,6 +22,7 @@ import getLogger from './util/logger';
 const log = getLogger('App');
 
 const init = () => {
+  console.log('app log: ', log);
   log.info('init() :: App starts booting...');
 
   // Check for devToolsExtension
