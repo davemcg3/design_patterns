@@ -4,7 +4,7 @@ class NotesController < ApplicationController
   # GET /notes
   # GET /notes.json
   def index
-    @notes = Note.all
+    @notes = Note.where(user: current_user)
   end
 
   # GET /notes/1
@@ -24,13 +24,14 @@ class NotesController < ApplicationController
   # POST /notes
   # POST /notes.json
   def create
-    @note = Note.new(note_params)
+    @note = Note.new(note_params.to_hash.merge!({ user: current_user}))
 
     respond_to do |format|
       if @note.save
         format.html { redirect_to @note, notice: 'Note was successfully created.' }
         format.json { render :show, status: :created, location: @note }
       else
+        byebug
         format.html { render :new }
         format.json { render json: @note.errors, status: :unprocessable_entity }
       end
@@ -41,7 +42,7 @@ class NotesController < ApplicationController
   # PATCH/PUT /notes/1.json
   def update
     respond_to do |format|
-      if @note.update(note_params)
+      if @note.update(note_params.to_hash.merge!({ user: current_user }))
         format.html { redirect_to @note, notice: 'Note was successfully updated.' }
         format.json { render :show, status: :ok, location: @note }
       else
@@ -69,7 +70,7 @@ class NotesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def note_params
-      Rails.logger.debug "params: #{params.inspect}"
-      params.require(:note).permit(:data, :site, :user, :status)
+      Rails.logger.debug "params: #{params.inspect}, current_user: #{current_user}"
+      params.require(:note).permit(:data, :status)
     end
 end

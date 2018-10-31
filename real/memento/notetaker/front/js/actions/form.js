@@ -18,25 +18,39 @@ export const fetchNote = () => async (dispatch) => {
 }
 
 export const setNote = note => async (dispatch) => {
+  log.info('setting note: ', note)
   dispatch(noteUpdate(note))
 }
 
 export const saveNote = note => async (dispatch) => {
   const jwt = localStorage.getItem('notetaker_jwt')
-  log.info('jwt: ', jwt)
+  // log.info('jwt: ', jwt, 'note: ', note)
   const res = await axios({
-    method: 'post', // TODO: adjust this method to patch if we have an id and include the id in the data for the back-end to update
-    url: '/notes.json',
+    method: note.hasOwnProperty('id') ? 'patch' : 'post',
+    url: '/notes' + (note.hasOwnProperty('id') ? '/' + note.id : '') + '.json',
     data: {
-      note: {
-        data: note,
-      },
+      note: note,
     },
     headers: {
       Authorization: `Bearer ${jwt}`,
     },
   })
-  log.info('saveNote returned: ', res)
-  dispatch(noteUpdate(note))
-  fetchHistory()
+  // log.info('saveNote returned: ', res)
+  dispatch(noteUpdate(res.data))
+  dispatch(setNote(res.data))
+  dispatch(fetchHistory())
+}
+
+export const deleteNote = note => async (dispatch) => {
+  const jwt = localStorage.getItem('notetaker_jwt')
+  const res = await axios({
+    method: 'delete',
+    url: 'notes/' + note.id + '.json',
+    headers: {
+      Authorization: `Bearer ${jwt}`,
+    },
+  })
+  log.info('deleted note, response: ', res)
+  dispatch(setNote({}))
+  dispatch(fetchHistory())
 }

@@ -15,15 +15,14 @@ const historyFetch = (history) => {
 };
 
 export const fetchHistory = () => async (dispatch) => {
-  console.log('inside fetchHistory')
+  // console.log('inside fetchHistory')
 
   try {
-    console.log('actions/history.js fetching history');
-    log.info('fetching history')
+    log.info('actions/history.js fetching history')
     const jwt = localStorage.getItem('notetaker_jwt')
-    log.info(`jwt ( ${typeof (jwt)} ) `, jwt, ` !== ( ${typeof ('null')} ) null ? `, (jwt !== 'null'))
+    // log.info(`jwt ( ${typeof (jwt)} ) `, jwt, ` !== ( ${typeof ('null')} ) null ? `, (jwt !== 'null'))
     if (jwt !== 'null') {
-      log.info('getting notes from server')
+      // log.info('getting notes from server')
       const res = await axios({
         method: 'get',
         url: '/notes.json',
@@ -31,7 +30,7 @@ export const fetchHistory = () => async (dispatch) => {
           Authorization: `Bearer ${jwt}`,
         },
       });
-      log.info(res);
+      // log.info(res);
 
       dispatch(historyFetch(res.data));
     }

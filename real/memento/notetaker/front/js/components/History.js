@@ -12,6 +12,7 @@ class History extends React.Component {
     fetchHistory: PropTypes.func.isRequired,
     isLoggedIn: PropTypes.bool,
     setNote: PropTypes.func.isRequired,
+    deleteNote: PropTypes.func.isRequired,
   };
 
   componentWillMount(){
@@ -23,9 +24,9 @@ class History extends React.Component {
   }
 
   maybeFetchHistory(nextProps){
-    console.log('components/History.js willReceiveProps: ', nextProps)
-    console.log('components/History.js isLoggedIn: ', this.props.isLoggedIn)
-    console.log('components/History.js history: ', this.props.history.history)
+    // console.log('components/History.js willReceiveProps: ', nextProps)
+    // console.log('components/History.js isLoggedIn: ', this.props.isLoggedIn)
+    // console.log('components/History.js history: ', this.props.history.history)
     if (nextProps.isLoggedIn && !nextProps.history.history) {
       nextProps.fetchHistory()
     }
@@ -33,14 +34,12 @@ class History extends React.Component {
   }
 
   render() {
-    console.log(this.props.setNote)
     return (
       <div>
         <h2>History</h2>
         {
           this.props.history.history && this.props.history.history.map((item) => {
-            console.log('item.data: ', item.data)
-            return <HistoryItem key={item.id} data={item} setNote={this.props.setNote}/>
+            return <HistoryItem key={item.id} data={item} setNote={this.props.setNote} deleteNote={this.props.deleteNote}/>
           })
         }
       </div>

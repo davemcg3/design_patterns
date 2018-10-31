@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 import History from '../components/History';
 import { fetchHistory } from '../actions/history'
-import { setNote } from '../actions/form'
+import { setNote, deleteNote } from '../actions/form'
 
 const mapStateToProps = state => ({
   history: state.history,
@@ -16,6 +16,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
   fetchHistory,
   setNote,
+  deleteNote,
 };
 
 export default connect(

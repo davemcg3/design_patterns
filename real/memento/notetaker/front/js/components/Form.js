@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 class Form extends React.Component {
   static propTypes = {
-    note: PropTypes.string,
+    note: PropTypes.object,
     fetchNote: PropTypes.func.isRequired,
     setNote: PropTypes.func.isRequired,
     saveNote: PropTypes.func.isRequired,
@@ -20,11 +20,17 @@ class Form extends React.Component {
   }
 
   updateNote(event) {
-    this.props.setNote(event.target.value)
+    let note = JSON.parse(JSON.stringify(this.props.note))
+    note.data = event.target.value
+    this.props.setNote(note)
   }
 
   saveNote(event) {
     this.props.saveNote(this.props.note)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('Form.js nextProps: ', nextProps)
   }
 
   render() {
@@ -38,7 +44,7 @@ class Form extends React.Component {
     return (
       <div>
         <h1>Note:</h1>
-        <textarea onChange={this.updateNote} value={note} style={textareaStyle} />
+        <textarea onChange={this.updateNote} value={note.data} style={textareaStyle} />
         <button onClick={this.saveNote}>Save</button>
       </div>
     );
